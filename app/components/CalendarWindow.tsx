@@ -200,7 +200,7 @@ export const CalendarWindow = ({ day, questions, onClick, style, isAnswered = fa
       {/* Real-time countdown clock */}
       <div
         className={cn(
-          "flex items-center gap-0.5 text-[7px] sm:text-[10px] font-mono relative z-10 tabular-nums",
+          "flex items-center gap-0.5 text-[12px] sm:text-[10px] font-mono relative z-10 tabular-nums",
           isLocked
             ? "text-gray-400"
             : questionAnswered
@@ -209,7 +209,7 @@ export const CalendarWindow = ({ day, questions, onClick, style, isAnswered = fa
                 ? "text-gray-500"
                 : status === "expiring"
                   ? "text-orange-300"
-                  : "text-green-300",
+                  : "text-green-500 text-xl ",
         )}
       >
         {questionAnswered && <CheckCircle className="w-2 h-2 sm:w-3 sm:h-3" />}

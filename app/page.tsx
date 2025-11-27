@@ -8,17 +8,23 @@ import { PathConnector } from "./components/PathConnector";
 import { LogOut, Trophy, Loader2 } from 'lucide-react';
 import { AppUser, Question } from './lib/userModel';
 import { getUserFromCookies, logoutUser } from './lib/cookies';
-import { auth, db } from './lib/firebase';
+import { auth, db, getCurrentUser } from './lib/firebase';
 import { addDoc, collection } from 'firebase/firestore';
 import { useQuestions, useUser } from './lib/useQuestions';
 const Index = () => {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const { questions, isLoadedQuestions, listenToQuestions } = useQuestions()
   const { user, isLoadedUser, listenToUser } = useUser();
-
+  async function getuser(){
+    const userFromCookies = await getCurrentUser()
+    if(!userFromCookies) {
+      window.location.href="/auth"
+      return;
+    }
+  }
   useEffect(() => {
-    listenToUser();
-  }, []);
+    getuser()
+  }, [ ]);
   // Start listening to questions on mount
   useEffect(() => {
     listenToQuestions()
@@ -30,7 +36,7 @@ const Index = () => {
   // Create a winding path layout - windows positioned to create an interesting journey
   const windowPositions = useMemo(() => {
     const basePositions: [number, number][] = [
-      [15, 8], [40, 5], [65, 10], [88, 6],
+      [6, 8], [40, 5], [65, 10], [88, 6],
       [85, 22], [60, 25], [35, 20], [12, 24],
       [18, 38], [42, 42], [68, 36], [90, 40],
       [82, 55], [55, 58], [30, 54], [8, 58],
@@ -95,7 +101,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-red-950 text-white overflow-x-hidden">
+    <div className="min-h-screen   bg-gradient-to-b from-red-950 via-red-900 to-red-950 text-white overflow-x-hidden">
       <Snowflakes />
 
       {/* Fixed Header with Navigation */}
@@ -138,11 +144,11 @@ const Index = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="font-christmas text-6xl sm:text-8xl md:text-9xl font-bold mb-6 text-yellow-400 drop-shadow-2xl" style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.5)' }}>
-              Kalendarz Adwentowy
+            <h1 className="font-christmas text-6xl sm:text-6xl md:text-7xl font-bold mb-6 text-yellow-400 drop-shadow-2xl" style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.5)' }}>
+            Adventskalender zum Deutschüben
             </h1>
-            <p className="font-serif text-xl sm:text-2xl md:text-3xl mb-12 drop-shadow-lg text-white/90 italic">
-              24 dni pełnych świątecznej magii ✨
+            <p className="font-christma text-xl sm:text-2xl md:text-3xl mb-12 drop-shadow-lg text-white/90 italic">
+              24 Tage Wissen, Spaß und Gewinnen! ✨🎁
             </p>
           </motion.div>
         </div>
@@ -170,11 +176,11 @@ const Index = () => {
           transition={{ duration: 1 }}
           className="text-center mb-8 sm:mb-16"
         >
-          <h2 className="font-christmas text-4xl sm:text-6xl md:text-7xl font-bold text-yellow-400 mb-4 px-2" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
-            Odkryj Codzienną Niespodziankę
+          <h2 className="font-christmas text-4xl sm:text-3xl md:text-4xl font-bold text-yellow-400 mb-4 px-2" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+          Każdego dnia będzie czekało nowe okienko. Odpowiedzi trzeba udzielać w języku niemieckim. Każde okienko można otworzyć tylko w wyznaczonym dniu, a jeśli ktoś coś przegapi, może cofnąć się wyłącznie o jeden dzień. Po otwarciu pytania czas na rozwiązanie to 60 minut. Dla trzech najlepszych uczestników przewidziane są nagrody. Dodatkowo wyróżnieni zostaną najlepsi uczniowie z każdej klasy.
           </h2>
-          <p className="font-serif text-lg sm:text-xl text-red-200 italic">
-            Kliknij okienko, aby zobaczyć pytanie dnia
+          <p className="font-christmas text-3xl  text-red-200 italic">
+          Viel Spaβ!
           </p>
         </motion.div>
 
@@ -208,7 +214,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="relative z-10 py-8 sm:py-12 text-center border-t border-red-800">
         <p className="font-christmas text-red-200 text-xl sm:text-2xl">
-          Wesołych Świąt! 🎄✨
+        Frohe Weihnachten ! 🎄✨
         </p>
       </footer>
 

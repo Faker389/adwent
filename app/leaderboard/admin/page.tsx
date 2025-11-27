@@ -16,7 +16,7 @@ import { Snowflakes } from '../../components/Snowflakes';
 import { useQuestions, useUsers } from '@/app/lib/useQuestions';
 import { AppUser } from '@/app/lib/userModel';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { db } from '@/app/lib/firebase';
+import { db, getCurrentUser } from '@/app/lib/firebase';
 
 
 
@@ -69,7 +69,16 @@ export default function AdminLeaderboard() {
     return prev
   },[])
 
-
+  async function getuser(){
+    const userFromCookies = await getCurrentUser()
+    if(!userFromCookies) {
+      window.location.href="/auth"
+      return;
+    }
+  }
+  useEffect(()=>{
+    getuser()
+  },[])
   const handleUserClick = (user: AppUser) => {
     setSelectedUser(user);
   };

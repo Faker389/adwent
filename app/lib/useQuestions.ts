@@ -56,8 +56,8 @@ export const useUsers = create<UserStore>((set, get) => ({
 
     const unsub = onSnapshot(collection(db, "users"), (snapshot) => {
       const data = snapshot.docs.map((doc) => doc.data() as AppUser)
-    
-      set({ users: data, isLoaded: true })
+      const tempData = data.filter((e)=>e.email!=="magkol.594@edu.erzeszow.pl")
+      set({ users: tempData, isLoaded: true })
     })
     
 

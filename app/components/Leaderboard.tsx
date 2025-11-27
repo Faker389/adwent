@@ -22,7 +22,6 @@ export const Leaderboard = () => {
   useEffect(() => {
       setLeaderboard(users);
   }, [users]);
-
   if (!isLoaded) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -91,7 +90,7 @@ export const Leaderboard = () => {
             <tbody>
               {leaderboard.map((entry, index) => (
                 <motion.tr
-                  key={entry.id}
+                  key={index}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
@@ -124,11 +123,11 @@ export const Leaderboard = () => {
                           key={dayIndex}
                           className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
                             correct.isCorrect
-                              ? 'bg-green-500 text-white'
-                              : 'bg-red-800/50 text-red-400'
+                              ? 'bg-green-500 text-white':correct.isCorrect==null?"bg-red-800/50 text-red-400"
+                              : 'bg-red-400 text-red-800'
                           }`}
                         >
-                          {correct.isCorrect ? '✓' : ''}
+                          {correct.isCorrect ? '✓' :correct.isCorrect==null?"": 'X'}
                         </div>
                       ))}
                     </div>

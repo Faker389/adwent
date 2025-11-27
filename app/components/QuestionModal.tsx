@@ -137,7 +137,7 @@ export const QuestionModal = ({
     if (!question) return null
 
     const correctAnswer = question.answer!
-    const userAnswer = answer.trim()
+    const userAnswer = answer.trim().toLowerCase()
 
     // Type 1: ABC Options (a, b, c)
     if (question.questionType === 1) {
@@ -148,7 +148,7 @@ export const QuestionModal = ({
     // Type 3: True/False (t/f stored, but Richtig/Falsch displayed)
     if (question.questionType === 3) {
       // Convert user's Richtig/Falsch to t/f for comparison
-      const userAnswerConverted = userAnswer === "Richtig" ? "t" : "f"
+      const userAnswerConverted = userAnswer === "richtig" ? "t" : "f"
       return userAnswerConverted === correctAnswer.toLowerCase()
     }
 
@@ -177,7 +177,7 @@ export const QuestionModal = ({
         if (q.questionNumber === questionNumber) {
           return {
             ...q,
-            answer,
+            answer:answer.toLowerCase(),
             isCorrect,
           }
         }
@@ -361,7 +361,7 @@ export const QuestionModal = ({
     return (
       <div className="space-y-2">
         <Label htmlFor="answer" className="text-white font-serif text-base">
-          Twoja odpowiedź:
+          Twoja odpowiedź: *<span className="text-sm">(Odpowiedzi udziel w języku niemieckim)</span>
         </Label>
         <Input
           id="answer"

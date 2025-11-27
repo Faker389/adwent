@@ -45,8 +45,7 @@ export const RegistrationForm = ({showAlert}:{showAlert :(e: string,e2:"error" |
       questions:Array.from({length:24}).map((e,idx)=>{
         return {
           questionNumber:idx+1,
-          question: "Jakiego koloru są tradycyjne świąteczne skarpety na prezenty?",
-          answer: "Czerwone",
+          answer: null,
           isCorrect: null,
         }
       })
@@ -182,7 +181,7 @@ export const RegistrationForm = ({showAlert}:{showAlert :(e: string,e2:"error" |
               <SelectValue placeholder="Wybierz klasę" />
             </SelectTrigger>
             <SelectContent className="bg-red-900 border-red-700">
-            <SelectItem value="1AT">1AT</SelectItem>
+            <SelectItem value="1AT">1AT</SelectItem>x
               <SelectItem value="1BT">1BT</SelectItem>
               <SelectItem value="1DT">1DT</SelectItem>
               <SelectItem value="1ET">1ET</SelectItem>
