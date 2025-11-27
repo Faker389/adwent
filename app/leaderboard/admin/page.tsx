@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from '../../components/ui/dialog';
 import { Snowflakes } from '../../components/Snowflakes';
-import { useQuestions, useUsers } from '@/app/lib/useQuestions';
+import { useQuestions, useUser, useUsers } from '@/app/lib/useQuestions';
 import { AppUser } from '@/app/lib/userModel';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db, getCurrentUser } from '@/app/lib/firebase';
@@ -30,6 +30,7 @@ interface userQuestions{
 
 export default function AdminLeaderboard() {
   const [filteredUsers, setFilteredUsers] = useState<AppUser[]>([]);
+  const { user, isLoadedUser, listenToUser } = useUser();
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<AppUser | null>(null);
@@ -65,7 +66,7 @@ export default function AdminLeaderboard() {
   }, [searchQuery, users]);
 
   const userAnswers = selectedUser&&selectedUser?.questions.reduce((prev:userQuestions[],items)=>{
-    if(items.answer!==null) prev.push(items); return prev;
+    if(items.answer!==null) {prev.push(items); return prev;}
     return prev
   },[])
 
@@ -76,6 +77,15 @@ export default function AdminLeaderboard() {
       return;
     }
   }
+  useEffect(()=>{
+    listenToUser()
+  },[listenToUser])
+  useEffect(()=>{
+    if(user?.email!=="magkol.594@edu.erzeszow.pl"){
+      window.location.href="/"
+      return;
+    }
+  },[user])
   useEffect(()=>{
     getuser()
   },[])

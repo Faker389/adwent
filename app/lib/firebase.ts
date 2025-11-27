@@ -2,6 +2,7 @@
 import { FirebaseApp, getApp, getApps, initializeApp } from "firebase/app";
 import { Auth, getAuth, GoogleAuthProvider } from "firebase/auth";
 import { doc, Firestore, getFirestore, setDoc } from "firebase/firestore";
+import { AppUser } from "./userModel";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries

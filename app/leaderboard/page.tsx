@@ -3,8 +3,10 @@ import { Snowflakes } from '../components/Snowflakes';
 import { Leaderboard } from '../components/Leaderboard';
 import { useEffect } from 'react';
 import { getCurrentUser } from '../lib/firebase';
+import { useUser } from '../lib/useQuestions';
 
 const LeaderboardPage = () => {
+  const { user, isLoadedUser, listenToUser } = useUser();
   async function getuser(){
     const userFromCookies = await getCurrentUser()
     if(!userFromCookies) {
@@ -12,6 +14,15 @@ const LeaderboardPage = () => {
       return;
     }
   }
+  useEffect(()=>{
+    listenToUser()
+  },[listenToUser])
+  useEffect(()=>{
+    if(user?.email!=="magkol.594@edu.erzeszow.pl"){
+      window.location.href="/"
+      return;
+    }
+  },[user])
   useEffect(()=>{
     getuser()
   },[])

@@ -107,7 +107,7 @@ const Index = () => {
       {/* Fixed Header with Navigation */}
       <header className="fixed top-0 left-0 right-0 z-50 p-4 sm:p-6">
         <div className="flex justify-end items-center gap-2 sm:gap-4">
-          <motion.button
+          {user?.email=="magkol.594@edu.erzeszow.pl"&&<motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => window.location.href=('/leaderboard')}
@@ -116,7 +116,7 @@ const Index = () => {
             <Trophy className="w-4 h-4 sm:w-5 sm:h-5" />
             <span className="hidden sm:inline">Tabela Wyników</span>
             <span className="sm:hidden">Wyniki</span>
-          </motion.button>
+          </motion.button>}
           
           <motion.button
             whileHover={{ scale: 1.05 }}
