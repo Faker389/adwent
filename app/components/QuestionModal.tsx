@@ -300,7 +300,7 @@ export const QuestionModal = ({
     if (question.questionType === 1 && isABCOption(question.options)) {
       const options = question.options
       return (
-        <div className="space-y-3">
+        <div className="space-y-3 ">
           <Label className="text-white font-serif text-base">Wybierz odpowiedź:</Label>
           <div className="space-y-2">
             {["a", "b", "c"].map((key) => (
@@ -385,18 +385,18 @@ export const QuestionModal = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-red-950/80 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-red-950/80 backdrop-blur-sm z-50 "
           />
 
           {/* Modal */}
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-6 overflow-y-auto overscroll-contain">
+          <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="relative w-full max-w-lg bg-gradient-to-b from-red-900 to-red-950 border-2 border-yellow-400/50 rounded-3xl p-8 shadow-2xl"
-            >
+              className="relative overflow-x-hidden w-full max-w-lg max-h-[90vh] overflow-y-auto bg-gradient-to-b from-red-900 to-red-950 border-2 border-yellow-400/50 rounded-3xl p-8 shadow-2xl styled-scrollbar"
+              >
               {/* Close button */}
               <button
                 onClick={onClose}
