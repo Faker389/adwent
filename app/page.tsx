@@ -35,7 +35,7 @@ const Index = () => {
       [18, 38], [42, 42], [68, 36], [90, 40],
       [82, 55], [55, 58], [30, 54], [8, 58],
       [20, 72], [48, 75], [72, 70], [92, 74],
-      [78, 88], [50, 92], [25, 88], [10, 95],
+      [78, 88], [50, 92], [25, 88], [1, 95],
     ];
 
     return basePositions.map(([x, y], i) => {
@@ -215,7 +215,7 @@ const Index = () => {
       {/* Question Modal */}
       <QuestionModal
         day={selectedDay || 1}
-        isAnsweared={user?.questions[(selectedDay || 1)-1].answer!=null}
+        isAnswered={user?.questions[(selectedDay || 1)-1].answer!=null}
         questions={questions}
         isOpen={selectedDay !=null}
         onClose={() => setSelectedDay(null)}

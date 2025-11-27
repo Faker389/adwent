@@ -76,12 +76,15 @@ export const Leaderboard = () => {
                 <th className="text-left py-4 px-4 font-extrabold text-yellow-400 text-xl">#</th>
                 <th className="text-left py-4 px-4 font-extrabold text-yellow-400 text-xl">Imię i Nazwisko</th>
                 <th className="text-center py-4 px-2 font-extrabold text-yellow-400 text-sm">
-                  {Array.from({ length: 24 }, (_, i) => i + 1).map((day) => (
-                    <span key={day} className="inline-block w-8 text-xs">
-                      {day}
-                    </span>
-                  ))}
-                </th>
+  <div className="grid grid-cols-24 gap-1">
+    {Array.from({ length: 24 }, (_, i) => (
+      <span key={i} className="w-6 text-center block">
+        {i + 1}
+      </span>
+    ))}
+  </div>
+</th>
+
                 <th className="text-center py-4 px-4 font-extrabold text-yellow-400 text-xl">Suma</th>
               </tr>
             </thead>

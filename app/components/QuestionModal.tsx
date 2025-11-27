@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import type React from "react"
 import { doc, getDoc, Timestamp, updateDoc } from "firebase/firestore"
 
-import { X, Sparkles, Lock, AlertTriangle, Clock } from "lucide-react"
+import { X, Sparkles, Lock, AlertTriangle, Clock, CheckCircle } from "lucide-react"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 import { Label } from "./ui/label"
@@ -13,13 +13,19 @@ import { getQuestionStatus, getTimeRemaining, canAnswerQuestion, type QuestionSt
 import type { Question, ABCOption, TrueFalseOption, AppUser } from "../lib/userModel"
 import { db } from "../lib/firebase"
 import { useUser } from "../lib/useQuestions"
+import {
+  startQuestionTimer,
+  isQuestionTimerExpired,
+  getQuestionTimeRemaining,
+  formatTimeRemaining,
+} from "../lib/questionTimet"
 
 interface QuestionModalProps {
   day: number
   questions: Question[]
-  isOpen: boolean|null
+  isOpen: boolean | null
   onClose: () => void
-  isAnsweared:boolean
+  isAnswered: boolean
   onAnswerSubmitted?: () => void
 }
 
@@ -31,24 +37,49 @@ const toDate = (timestamp: Timestamp | Date | unknown): Date => {
   return timestamp instanceof Date ? timestamp : new Date(timestamp as string)
 }
 
-export const QuestionModal = ({ day, questions, isOpen, onClose,isAnsweared, onAnswerSubmitted }: QuestionModalProps) => {
+export const QuestionModal = ({
+  day,
+  questions,
+  isOpen,
+  onClose,
+  isAnswered,
+  onAnswerSubmitted,
+}: QuestionModalProps) => {
   const [answer, setAnswer] = useState("")
   const [loading, setLoading] = useState(false)
   const [timeLeft, setTimeLeft] = useState("")
   const [status, setStatus] = useState<QuestionStatus>("locked")
   const [countdown, setCountdown] = useState("")
-  const { user, isLoadedUser, listenToUser } = useUser();
-  console.log({ day, questions, isOpen, onClose,isAnsweared, onAnswerSubmitted })
-  useEffect(()=>{
+  const [hourTimer, setHourTimer] = useState("")
+  const [hourTimerExpired, setHourTimerExpired] = useState(false)
+  const { user, isLoadedUser, listenToUser } = useUser()
+
+  useEffect(() => {
     listenToUser()
-  },[listenToUser])
+  }, [listenToUser])
+
   const question = questions[day - 1]
+
+  useEffect(() => {
+    if (isOpen && question && !isAnswered) {
+      const currentStatus = getQuestionStatus(day, questions)
+      if (currentStatus === "available" || currentStatus === "expiring") {
+        startQuestionTimer(day)
+      }
+    }
+  }, [isOpen, day, question, isAnswered, questions])
 
   useEffect(() => {
     if (isOpen && questions.length > 0) {
       const updateStatus = () => {
         setStatus(getQuestionStatus(day, questions))
         setTimeLeft(getTimeRemaining(day, questions))
+
+        if (!isAnswered) {
+          const remaining = getQuestionTimeRemaining(day)
+          setHourTimer(formatTimeRemaining(remaining))
+          setHourTimerExpired(isQuestionTimerExpired(day))
+        }
 
         // Real-time countdown
         if (question) {
@@ -99,51 +130,48 @@ export const QuestionModal = ({ day, questions, isOpen, onClose,isAnsweared, onA
       const interval = setInterval(updateStatus, 1000)
       return () => clearInterval(interval)
     }
-  }, [isOpen, day, questions, question])
+  }, [isOpen, day, questions, question, isAnswered])
 
   // Check if answer is correct based on question type
   const checkAnswer = (): boolean | null => {
-    if (!question) return null;
+    if (!question) return null
 
-    const correctAnswer = question.answer!;
-    const userAnswer = answer.trim();
+    const correctAnswer = question.answer!
+    const userAnswer = answer.trim()
 
     // Type 1: ABC Options (a, b, c)
     if (question.questionType === 1) {
       // Compare lowercase letters (a, b, or c)
-      return userAnswer.toLowerCase() === correctAnswer.toLowerCase();
+      return userAnswer.toLowerCase() === correctAnswer.toLowerCase()
     }
 
     // Type 3: True/False (t/f stored, but Richtig/Falsch displayed)
     if (question.questionType === 3) {
       // Convert user's Richtig/Falsch to t/f for comparison
-      const userAnswerConverted = userAnswer === "Richtig" ? "t" : "f";
-      return userAnswerConverted === correctAnswer.toLowerCase();
+      const userAnswerConverted = userAnswer === "Richtig" ? "t" : "f"
+      return userAnswerConverted === correctAnswer.toLowerCase()
     }
 
     // Type 2: Text Input - return null (to be checked manually later)
     if (question.questionType === 2) {
-      return null;
+      return null
     }
 
-    return null;
+    return null
   }
-  async function updateUserQuestion(
-    questionNumber: number,
-    answer: string,
-    isCorrect: boolean
-   ) {
+
+  async function updateUserQuestion(questionNumber: number, answer: string, isCorrect: boolean) {
     try {
-      const userRef = doc(db, 'users', user?.id!);
-      
+      const userRef = doc(db, "users", user?.id!)
+
       // Get current user data
-      const userSnap = await getDoc(userRef);
+      const userSnap = await getDoc(userRef)
       if (!userSnap.exists()) {
-        throw new Error('User document not found');
+        throw new Error("User document not found")
       }
-   
-      const userData = userSnap.data() as AppUser ;
-      
+
+      const userData = userSnap.data() as AppUser
+
       // Find and update the specific question
       const updatedQuestions = userData.questions.map((q) => {
         if (q.questionNumber === questionNumber) {
@@ -151,26 +179,45 @@ export const QuestionModal = ({ day, questions, isOpen, onClose,isAnsweared, onA
             ...q,
             answer,
             isCorrect,
-          };
+          }
         }
-        return q;
-      });
-   
+        return q
+      })
+
       // Update the entire questions array
       await updateDoc(userRef, {
         questions: updatedQuestions,
-      });
-   
-      console.log(`Question ${questionNumber} updated successfully`);
-      return { success: true };
+      })
+
+      console.log(`Question ${questionNumber} updated successfully`)
+      return { success: true }
     } catch (error) {
-      console.error('Error updating question:', error);
-      throw error;
+      console.error("Error updating question:", error)
+      throw error
     }
-   }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!answer.trim()) return
+
+    if (isAnswered) {
+      toast({
+        title: "Już odpowiedziano! ✅",
+        description: "Odpowiedziałeś już na to pytanie.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (hourTimerExpired) {
+      toast({
+        title: "Czas minął! ⏰",
+        description: "Minęła godzina od otwarcia pytania. Nie możesz już odpowiedzieć.",
+        variant: "destructive",
+      })
+      return
+    }
 
     if (!canAnswerQuestion(day, questions)) {
       toast({
@@ -185,7 +232,7 @@ export const QuestionModal = ({ day, questions, isOpen, onClose,isAnsweared, onA
 
     try {
       // Check if answer is correct based on question type
-      const isCorrect = checkAnswer();
+      const isCorrect = checkAnswer()
 
       // Update in Firebase
       await updateUserQuestion(day, answer.trim(), isCorrect!)
@@ -229,7 +276,7 @@ export const QuestionModal = ({ day, questions, isOpen, onClose,isAnsweared, onA
 
   const isLocked = status === "locked"
   const isExpired = status === "expired"
-  const canAnswer = status === "available" || status === "expiring"
+  const canAnswer = (status === "available" || status === "expiring") && !isAnswered && !hourTimerExpired
 
   // Format the open date for display
   const formatOpenDate = () => {
@@ -370,6 +417,31 @@ export const QuestionModal = ({ day, questions, isOpen, onClose,isAnsweared, onA
                 <Sparkles className="w-8 h-8 text-yellow-400 animate-pulse" style={{ animationDelay: "1s" }} />
               </div>
 
+              {!isAnswered && !isLocked && !isExpired && (
+                <div
+                  className={`text-center mb-4 p-4 rounded-xl border-2 ${
+                    hourTimerExpired ? "bg-red-900/50 border-red-500" : "bg-green-900/30 border-green-500"
+                  }`}
+                >
+                  <div className="flex items-center justify-center gap-2 text-sm mb-1">
+                    <Clock className="w-4 h-4" />
+                    <span className="text-white font-semibold">
+                      {hourTimerExpired ? "Czas na odpowiedź minął!" : "Czas na odpowiedź:"}
+                    </span>
+                  </div>
+                  <div
+                    className={`font-mono text-3xl font-bold tabular-nums ${
+                      hourTimerExpired ? "text-red-400" : "text-green-400"
+                    }`}
+                  >
+                    {hourTimerExpired ? "00:00" : hourTimer}
+                  </div>
+                  <p className="text-xs text-gray-300 mt-1">
+                    {hourTimerExpired ? "Nie możesz już odpowiedzieć" : "od otwarcia pytania"}
+                  </p>
+                </div>
+              )}
+
               {/* Real-time countdown */}
               <div
                 className={`text-center mb-4 ${
@@ -385,11 +457,11 @@ export const QuestionModal = ({ day, questions, isOpen, onClose,isAnsweared, onA
                 <div className="flex items-center justify-center gap-2 text-sm mb-1">
                   {status === "expiring" && <AlertTriangle className="w-4 h-4" />}
                   {isLocked && <Lock className="w-4 h-4" />}
-                  {canAnswer && <Clock className="w-4 h-4" />}
+                  {!isLocked && !isExpired && <Clock className="w-4 h-4" />}
                   <span>
                     {isLocked && "Otwiera się za:"}
                     {isExpired && "Czas na odpowiedź minął"}
-                    {canAnswer && (status === "expiring" ? "⚠️ Ostatnia szansa!" : "Pozostało:")}
+                    {!isLocked && !isExpired && (status === "expiring" ? "⚠️ Ostatnia szansa!" : "Dostępne przez:")}
                   </span>
                 </div>
                 {!isExpired && <div className="font-mono text-2xl font-bold tabular-nums">{countdown}</div>}
@@ -404,16 +476,25 @@ export const QuestionModal = ({ day, questions, isOpen, onClose,isAnsweared, onA
 
               {/* Question */}
               <div className="mb-6 p-6 bg-red-800/50 rounded-2xl border border-red-700">
-                {isLocked ? isAnsweared?(
+                {isAnswered ? (
                   <div className="text-center">
-                    <Lock className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-lg text-gray-400 font-serif">Odpowiedziałeś już na to pytanie</p>
+                    <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-4" />
+                    <p className="text-lg text-green-400 font-serif font-bold mb-2">
+                      ✅ Odpowiedziałeś już na to pytanie
+                    </p>
+                    <p className="text-sm text-gray-300">Twoja odpowiedź została zapisana i będzie oceniona</p>
                   </div>
-                ):(
+                ) : isLocked ? (
                   <div className="text-center">
                     <Lock className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-lg text-gray-400 font-serif">To pytanie zostanie odblokowane</p>
                     <p className="text-xl text-yellow-400 font-bold mt-2">{formatOpenDate()}</p>
+                  </div>
+                ) : hourTimerExpired ? (
+                  <div className="text-center">
+                    <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-4" />
+                    <p className="text-lg text-red-400 font-serif font-bold">⏰ Czas minął!</p>
+                    <p className="text-sm text-gray-300 mt-2">Minęła godzina od otwarcia tego pytania</p>
                   </div>
                 ) : questions.length === 0 ? (
                   <p className="text-lg text-center text-gray-400 font-serif">Ładowanie pytania...</p>
@@ -448,10 +529,16 @@ export const QuestionModal = ({ day, questions, isOpen, onClose,isAnsweared, onA
                     {loading ? "Wysyłanie..." : "Wyślij odpowiedź 🎁"}
                   </Button>
                 </form>
-              ) : isExpired ? (
+              ) : isExpired || hourTimerExpired || isAnswered ? (
                 <div className="text-center py-4">
-                  <p className="text-red-400 font-serif">Czas na odpowiedź na to pytanie już minął.</p>
-                  <Button onClick={onClose} className="mt-4 bg-red-800 hover:bg-red-700 text-white">
+                  <p className="text-red-400 font-serif mb-4">
+                    {isAnswered
+                      ? "Już odpowiedziałeś na to pytanie."
+                      : hourTimerExpired
+                        ? "Minęła godzina od otwarcia pytania."
+                        : "Czas na odpowiedź na to pytanie już minął."}
+                  </p>
+                  <Button onClick={onClose} className="bg-red-800 hover:bg-red-700 text-white">
                     Zamknij
                   </Button>
                 </div>
