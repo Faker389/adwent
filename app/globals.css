@@ -1,26 +1,121 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Define theme colors for Tailwind v4 */
+@theme {
+  /* Christmas colors */
+  --color-background: hsl(355 25% 8%);
+  --color-foreground: hsl(0 0% 98%);
+
+  --color-card: hsl(355 20% 12%);
+  --color-card-foreground: hsl(0 0% 98%);
+
+  --color-popover: hsl(355 25% 10%);
+  --color-popover-foreground: hsl(0 0% 98%);
+
+  --color-primary: hsl(355 85% 55%);
+  --color-primary-foreground: hsl(0 0% 100%);
+  
+  --color-gold: hsl(43 96% 56%);
+  --color-gold-foreground: hsl(355 25% 8%);
+
+  --color-secondary: hsl(152 69% 31%);
+  --color-secondary-foreground: hsl(0 0% 100%);
+
+  --color-muted: hsl(355 15% 20%);
+  --color-muted-foreground: hsl(0 0% 70%);
+
+  --color-accent: hsl(43 96% 56%);
+  --color-accent-foreground: hsl(355 25% 8%);
+
+  --color-destructive: hsl(0 84% 60%);
+  --color-destructive-foreground: hsl(0 0% 98%);
+
+  --color-border: hsl(355 20% 25%);
+  --color-input: hsl(355 20% 18%);
+  --color-ring: hsl(355 85% 55%);
+  
+  /* Christmas specific */
+  --color-snow: hsl(0 0% 98%);
+  --color-pine: hsl(152 69% 31%);
+  --color-berry: hsl(355 85% 55%);
+
+  --radius: 1rem;
+
+  /* Font families */
+  --font-christmas: var(--font-christmas), 'Mountains of Christmas', cursive;
+  --font-serif: var(--font-crimson), 'Crimson Text', serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-serif);
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-christmas);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Font utility classes */
+.font-christmas {
+  font-family: var(--font-christmas), 'Mountains of Christmas', cursive;
+}
+
+.font-serif {
+  font-family: var(--font-serif), 'Crimson Text', serif;
+}
+
+@layer utilities {
+  .text-gradient-gold {
+    background: linear-gradient(to right, hsl(43 96% 56%), hsl(38 92% 50%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .shadow-glow {
+    box-shadow: 0 0 40px hsla(355, 85%, 55%, 0.3);
+  }
+  
+  .shadow-gold {
+    box-shadow: 0 0 30px hsla(43, 96%, 56%, 0.4);
+  }
+}
+
+@keyframes snowfall {
+  0% {
+    transform: translateY(-10vh) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) translateX(100px);
+    opacity: 0;
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.animate-snowfall {
+  animation: snowfall linear infinite;
+}
+
+.animate-twinkle {
+  animation: twinkle 2s ease-in-out infinite;
 }
