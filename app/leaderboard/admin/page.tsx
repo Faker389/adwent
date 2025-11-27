@@ -110,7 +110,16 @@ export default function AdminLeaderboard() {
       const userData = userSnap.data() as AppUser ;
       
       // Find and update the specific question
-      const updatedQuestions = userData.questions.map((q) => {
+      const updatedQuestions = questions[questionNumber-1].questionType==2?
+      userData.questions.map((q) => {
+        if (q.questionNumber === questionNumber) {
+          return {
+            ...q,
+            isCorrect,
+          };
+        }
+        return q;
+      }):userData.questions.map((q) => {
         if (q.questionNumber === questionNumber) {
           return {
             ...q,
@@ -120,7 +129,6 @@ export default function AdminLeaderboard() {
         }
         return q;
       });
-   
       // Update the entire questions array
       await updateDoc(userRef, {
         questions: updatedQuestions,
