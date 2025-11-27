@@ -129,7 +129,6 @@ export default function AdminLeaderboard() {
         }
         return q;
       });
-   
       // Update the entire questions array
       await updateDoc(userRef, {
         questions: updatedQuestions,
