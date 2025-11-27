@@ -1,30 +1,40 @@
 "use client"
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Mail, ArrowLeft } from 'lucide-react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
+import { useState } from "react"
+import type React from "react"
+
+import { motion } from "framer-motion"
+import { Mail, ArrowLeft } from "lucide-react"
+import { Button } from "./ui/button"
+import { Input } from "./ui/input"
+import { sendPasswordResetEmail } from "firebase/auth"
+import { auth } from "../lib/firebase"
 
 interface ForgotPasswordFormProps {
-  onBack: () => void;
-    showAlert :(e: string,e2:"error" | "success" | "warning") => void 
+  onBack: () => void
+  showAlert: (e: string, e2: "error" | "success" | "warning") => void
 }
 
-export const ForgotPasswordForm = ({ onBack,showAlert }: ForgotPasswordFormProps) => {
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
+export const ForgotPasswordForm = ({ onBack, showAlert }: ForgotPasswordFormProps) => {
+  const [email, setEmail] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const handleResetPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    showAlert("Email Wysłany!","success");
-    
-    setLoading(false);
-  };
+    e.preventDefault()
+    setLoading(true)
+
+    try {
+      await sendPasswordResetEmail(auth, email, {
+        url: `${window.location.origin}/auth/reset-password`,
+        handleCodeInApp: true,
+      })
+      showAlert("Email Wysłany!", "success")
+      setEmail("")
+    } catch (error: any) {
+      showAlert(error.message || "Błąd podczas wysyłania emaila", "error")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <motion.div
@@ -37,12 +47,13 @@ export const ForgotPasswordForm = ({ onBack,showAlert }: ForgotPasswordFormProps
         <div className="inline-block mb-4">
           <Mail className="w-16 h-16 text-yellow-400 animate-pulse" />
         </div>
-        <h2 className="font-christmas text-4xl font-bold text-yellow-400 mb-2" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+        <h2
+          className="font-christmas text-4xl font-bold text-yellow-400 mb-2"
+          style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.5)" }}
+        >
           Zapomniałeś hasła?
         </h2>
-        <p className="text-red-200 font-serif">
-          Wpisz swój email, a wyślemy Ci link do resetowania hasła
-        </p>
+        <p className="text-red-200 font-serif">Wpisz swój email, a wyślemy Ci link do resetowania hasła</p>
       </div>
 
       <form onSubmit={handleResetPassword} className="space-y-6">
@@ -63,7 +74,7 @@ export const ForgotPasswordForm = ({ onBack,showAlert }: ForgotPasswordFormProps
           disabled={loading}
           className="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black font-bold py-6 rounded-2xl shadow-lg transition-all duration-300"
         >
-          {loading ? 'Wysyłanie...' : 'Wyślij link resetujący'}
+          {loading ? "Wysyłanie..." : "Wyślij link resetujący"}
         </Button>
 
         <Button
@@ -77,5 +88,5 @@ export const ForgotPasswordForm = ({ onBack,showAlert }: ForgotPasswordFormProps
         </Button>
       </form>
     </motion.div>
-  );
-};
+  )
+}

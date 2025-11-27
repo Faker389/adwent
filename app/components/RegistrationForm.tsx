@@ -5,7 +5,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { useState } from 'react';
-import { Sparkles, Gift } from 'lucide-react';
+import { Sparkles, Gift, Eye, EyeClosed } from 'lucide-react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
@@ -20,6 +20,7 @@ export const RegistrationForm = ({showAlert}:{showAlert :(e: string,e2:"error" |
     class: '',
     password: '',
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   async function handleRegister() {
     try {
@@ -217,19 +218,20 @@ export const RegistrationForm = ({showAlert}:{showAlert :(e: string,e2:"error" |
           </Select>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 relative">
           <Label htmlFor="password" className="text-white font-serif">
             Hasło
           </Label>
           <Input
             id="password"
-            type="password"
+            type={showPassword?"text":"password"}
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             placeholder="••••••••"
             className="bg-red-800/50 border-red-700 text-white placeholder:text-red-300/50 h-12 rounded-xl focus:border-yellow-400"
             required
           />
+          {showPassword?<Eye onClick={()=>setShowPassword(!showPassword)} className='w-5 h-5 absolute top-1/2 right-3 z-50' />:<EyeClosed onClick={()=>setShowPassword(!showPassword)} className='w-5 h-5 absolute top-1/2 right-3 z-50' />}
         </div>
 
         <Button
