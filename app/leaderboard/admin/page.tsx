@@ -14,7 +14,7 @@ import {
 } from '../../components/ui/dialog';
 import { Snowflakes } from '../../components/Snowflakes';
 import { useQuestions, useUser, useUsers } from '@/app/lib/useQuestions';
-import { AppUser } from '@/app/lib/userModel';
+import { ABCOption, AppUser, Question } from '@/app/lib/userModel';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db, getCurrentUser } from '@/app/lib/firebase';
 
@@ -81,10 +81,10 @@ export default function AdminLeaderboard() {
     listenToUser()
   },[listenToUser])
   useEffect(()=>{
-    if(user?.email!=="magkol.594@edu.erzeszow.pl"){
-      window.location.href="/"
-      return;
-    }
+    // if(user?.email!=="magkol.594@edu.erzeszow.pl"){
+    //   window.location.href="/"
+    //   return;
+    // }
   },[user])
   useEffect(()=>{
     getuser()
@@ -110,7 +110,16 @@ export default function AdminLeaderboard() {
       const userData = userSnap.data() as AppUser ;
       
       // Find and update the specific question
-      const updatedQuestions = userData.questions.map((q) => {
+      const updatedQuestions = questions[questionNumber-1].questionType==2?
+      userData.questions.map((q) => {
+        if (q.questionNumber === questionNumber) {
+          return {
+            ...q,
+            isCorrect,
+          };
+        }
+        return q;
+      }):userData.questions.map((q) => {
         if (q.questionNumber === questionNumber) {
           return {
             ...q,
@@ -133,7 +142,40 @@ export default function AdminLeaderboard() {
       throw error;
     }
    }
+   function getUserAnswear(userAnswear:userQuestions,question:Question){
+     console.log(question.questionType,question.question)
+      if(question.questionType==2){
+        return userAnswear.answer;
+      }else if(question.questionType==1){
+          const data = question.options as ABCOption;
+          switch(userAnswear.answer){
+            case "a":return data.a;break;
+            case "b":return data.b;break;
+            case "c":return data.c;break;
+          }
+      }else if(question.questionType==3){
+        return (userAnswear.answer)
+      }
+   }
+   function getCorrectAnswear(userAnswear:userQuestions,question:Question){
+    if(question.questionType==2){
+      return "pytanie otwarte";
+    }else if(question.questionType==1){
+        const data = question.options as ABCOption;
+        switch(question.answer){
+          case "a":return data.a;break;
+          case "b":return data.b;break;
+          case "c":return data.c;break;
+        }
+    }else if(question.questionType==3){
+      switch(question.answer){
+        case "f":return "falsch";break;
+        case "r":return "richtig";break;
 
+      }
+      return (question.answer)
+    }
+ }
   if (!isLoaded||!isLoadedQuestions) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-red-950">
@@ -267,14 +309,14 @@ export default function AdminLeaderboard() {
                     </div>
                     <div className="space-y-1">
                       <div className="text-sm">
-                      <span className="font-semibold">Pytanie</span>
+                      <span className="font-semibold">Pytanie: </span>
                         {questions[answer.questionNumber-1].question}<br/>
                         <span className="font-semibold">Odpowiedź użytkownika:</span>{' '}
-                        {answer.answer.toUpperCase()}
+                        {getUserAnswear(answer,questions[answer.questionNumber-1])}
                       </div>
                       <div className="text-sm">
                         <span className="font-semibold">Poprawna odpowiedź:</span>{' '}
-                        {questions[answer.questionNumber-1].answer?.toUpperCase()}
+                        {getCorrectAnswear(answer,questions[answer.questionNumber-1])}
                       </div>
                     </div>
                     {!answer.isCorrect && (
