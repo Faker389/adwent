@@ -50,11 +50,14 @@
   width: 8px;
 }
 html, body {
+  width: 100%;
+  min-height: 100dvh;
   margin: 0;
   padding: 0;
-  height: 100dvh;   /* full dynamic height */
   background: purple;
+  overflow-x: hidden; /* prevents shifting */
 }
+
 
 .styled-scrollbar::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.2);

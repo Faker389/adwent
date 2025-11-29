@@ -26,6 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pl">
+      <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+      </head>
       <body
         className={`${crimsonText.variable} ${mountainsOfChristmas.variable} antialiased`}
       >
