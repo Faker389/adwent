@@ -71,7 +71,8 @@ const Auth = () => {
     );
   }
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-red-950 text-white">
+
+    <div className="flex-1 bg-gradient-to-b from-red-950 via-red-900 to-red-950 text-white">
       <Snowflakes />
       <div className="fixed top-8 right-8 z-50 space-y-3 max-w-md">
         <AnimatePresence  >
