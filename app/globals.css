@@ -49,13 +49,13 @@
 .styled-scrollbar::-webkit-scrollbar {
   width: 8px;
 }
-body{
-  height: 100%;
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100dvh;   /* full dynamic height */
+  background: purple;
 }
-html{
-  height: 100%;
-  background-color: purple;
-}
+
 .styled-scrollbar::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 8px;
