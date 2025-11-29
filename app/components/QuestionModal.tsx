@@ -105,15 +105,14 @@ export const QuestionModal = ({
               const days = Math.floor(diff / (1000 * 60 * 60 * 24))
               const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
               const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-              const seconds = Math.floor((diff % (1000 * 60)) / 1000)
 
               if (days > 0) {
-                setCountdown(isMobile ? `${days}d ${hours}h ${minutes}m` : `${days}d ${hours}h ${minutes}m ${seconds}s`)
+                setCountdown(isMobile ? `${days}d ${hours}h ${minutes}m` : `${days}d ${hours}h ${minutes}m`)
               } else {
                 setCountdown(
                   isMobile 
                     ? `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`
-                    : `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`,
+                    : `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`,
                 )
               }
             }
@@ -127,15 +126,14 @@ export const QuestionModal = ({
               const days = Math.floor(diff / (1000 * 60 * 60 * 24))
               const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
               const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-              const seconds = Math.floor((diff % (1000 * 60)) / 1000)
 
               if (days > 0) {
-                setCountdown(isMobile ? `${days}d ${hours}h ${minutes}m` : `${days}d ${hours}h ${minutes}m ${seconds}s`)
+                setCountdown(isMobile ? `${days}d ${hours}h ${minutes}m` : `${days}d ${hours}h ${minutes}m`)
               } else {
                 setCountdown(
                   isMobile 
                     ? `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`
-                    : `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`,
+                    : `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`,
                 )
               }
             }
