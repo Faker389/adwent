@@ -50,11 +50,11 @@
   width: 8px;
 }
 html, body {
-  width: 100%;
-  min-height: 100dvh;
-  margin: 0;
-  padding: 0;
-  background: purple;
+  width: 100% !important;
+  min-height: 100dvh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: red;
   overflow-x: hidden; /* prevents shifting */
 }
 
