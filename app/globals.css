@@ -53,20 +53,23 @@ html {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;   /* ensures true fullscreen on mobile */
+  height: 100dvh;
   overflow-x: hidden;
   background-color: #460809;
 }
-
+#__next{
+  height: 100dvh;
+margin: 0;
+padding: 0;
+}
+.min-h-dvh{
+  min-height: calc(var(--vh, 1vh) * 100);
+}
 body {
   margin: 0;
+  height: 100dvh;
   padding: 0;
   width: 100%;
-  height: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;   /* ensures true fullscreen on mobile */
   overflow-x: hidden;
   background: linear-gradient(
     to bottom,
