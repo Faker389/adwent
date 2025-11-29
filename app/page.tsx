@@ -11,6 +11,7 @@ import { getUserFromCookies, logoutUser } from './lib/cookies';
 import { auth, db, getCurrentUser } from './lib/firebase';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { useQuestions, useUser } from './lib/useQuestions';
+import useOnlineStatus from './lib/useIsOnline';
 const Index = () => {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const { questions, isLoadedQuestions, listenToQuestions } = useQuestions()
@@ -22,10 +23,12 @@ const Index = () => {
       return;
     }
   }
+  const isOnline = useOnlineStatus();
+
   useEffect(() => {
     getuser()
     async function cos() {
-      const userRef = doc(db, "users", "wBnugahx0wb8KJNR0LJTuofHNkf1")
+      const userRef = doc(db, "users", "gofY03F90AOLLocPqWG4jFcZxhD3")
 
       await updateDoc(userRef, {
         questions:Array.from({length:24}).map((e,idx)=>{
@@ -85,7 +88,21 @@ const Index = () => {
       y: pos.yPercent,
     }));
   }, [windowPositions]);
-
+  if(!isOnline){
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-red-950 flex items-center justify-center">
+        <div className="text-center">
+          <p className="font-christmas text-2xl text-red-400">Jesteś offline połącz się z internetem i spróbuj ponownie.</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-6 py-3 bg-yellow-400 text-black font-bold rounded-xl"
+          >
+            Spróbuj ponownie
+          </button>
+        </div>
+      </div>
+    );
+  }
   // Show loading screen while questions are being fetched
   if (!isLoadedQuestions||!isLoadedUser) {
     return (

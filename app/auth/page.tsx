@@ -7,6 +7,7 @@ import { Snowflakes } from '../components/Snowflakes';
 import { ForgotPasswordForm } from '../components/ForgotPasswordForm';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AlertCircle } from 'lucide-react';
+import useOnlineStatus from '../lib/useIsOnline';
 interface Alert {
   id: string
   message: string
@@ -17,6 +18,7 @@ const Auth = () => {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [alerts, setAlerts] = useState<Alert[]>([])
+  const isOnline = useOnlineStatus();
   const showAlert = (message: string, type: 'error' | 'success' | 'warning' = 'error') => {
     const newAlert: Alert = {
       id: crypto.randomUUID(),
@@ -44,6 +46,21 @@ const Auth = () => {
   useEffect(()=>{
     setMounted(true)
   },[])
+  if(!isOnline){
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-red-950 flex items-center justify-center">
+        <div className="text-center">
+          <p className="font-christmas text-2xl text-red-400">Jesteś offline połącz się z internetem i spróbuj ponownie.</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-6 py-3 bg-yellow-400 text-black font-bold rounded-xl"
+          >
+            Spróbuj ponownie
+          </button>
+        </div>
+      </div>
+    );
+  }
   if(!mounted){
     return (
       <div className="flex items-center justify-center min-h-screen">
