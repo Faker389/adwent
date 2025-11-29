@@ -37,7 +37,6 @@ export default function AdminLeaderboard() {
   const [selectedUser, setSelectedUser] = useState<AppUser | null>(null);
   const isOnline = useOnlineStatus();
   const [loadingAnswers, setLoadingAnswers] = useState(false);
-  const { toast } = useToast();
   const router = useRouter();
   const { questions,isLoadedQuestions, listenToQuestions } = useQuestions()
   useEffect(()=>{
@@ -184,7 +183,7 @@ export default function AdminLeaderboard() {
  }
  if(!isOnline){
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-red-950 flex items-center justify-center">
+    <div className="min-h-dvh bg-gradient-to-b from-red-950 via-red-900 to-red-950 flex items-center justify-center">
       <div className="text-center">
         <p className="font-christmas text-2xl text-red-400">Jesteś offline połącz się z internetem i spróbuj ponownie.</p>
         <button
@@ -199,7 +198,7 @@ export default function AdminLeaderboard() {
 }
   if (!isLoaded||!isLoadedQuestions) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-red-950">
+      <div className="flex items-center justify-center min-h-dvh bg-gradient-to-b from-red-950 via-red-900 to-red-950">
         <div className="text-2xl font-christmas text-yellow-400 animate-pulse">
           Ładowanie...
         </div>
@@ -210,7 +209,7 @@ export default function AdminLeaderboard() {
   return (
     <>
       <Snowflakes />
-      <div className="min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-red-950 py-12 px-4 text-white">
+      <div className="min-h-dvh bg-gradient-to-b from-red-950 via-red-900 to-red-950 py-12 px-4 text-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <Button

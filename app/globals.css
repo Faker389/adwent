@@ -55,6 +55,7 @@ html {
   width: 100%;
   height: 100dvh;   /* ensures true fullscreen on mobile */
   overflow-x: hidden;
+  background-color: var(--color-background);
 }
 
 body {
@@ -63,13 +64,12 @@ body {
   width: 100%;
   height: 100%;   /* fills html element */
   overflow-x: hidden;
+  background-color: var(--color-background);
 }
 
-/* Make your main app container stretch */
-#root, #__next, .webchat__container {
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
+/* Ensure body's direct children fill the height */
+body > * {
+  min-height: 100%;
 }
 .styled-scrollbar::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.2);

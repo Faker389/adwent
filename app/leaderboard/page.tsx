@@ -27,7 +27,7 @@ const LeaderboardPage = () => {
     getuser()
   },[])
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-red-950">
+    <div className="min-h-dvh bg-gradient-to-b from-red-950 via-red-900 to-red-950">
       <Snowflakes />
       <Leaderboard />
     </div>

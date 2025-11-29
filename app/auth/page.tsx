@@ -48,7 +48,7 @@ const Auth = () => {
   },[])
   if(!isOnline){
     return (
-      <div className="min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-red-950 flex items-center justify-center">
+      <div className="min-h-dvh bg-gradient-to-b from-red-950 via-red-900 to-red-950 flex items-center justify-center">
         <div className="text-center">
           <p className="font-christmas text-2xl text-red-400">Jesteś offline połącz się z internetem i spróbuj ponownie.</p>
           <button
@@ -101,7 +101,7 @@ const Auth = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center py-12 px-4">
+      <div className="relative z-10 min-h-dvh flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           {showForgotPassword ? (
             <ForgotPasswordForm showAlert={showAlert} onBack={() => setShowForgotPassword(false)} />

@@ -11,7 +11,7 @@ const NotFound = () => {
   }, [pathname]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-red-950 via-red-900 to-red-950">
+    <div className="flex min-h-dvh items-center justify-center bg-gradient-to-b from-red-950 via-red-900 to-red-950">
       <Snowflakes />
       <div className="text-center relative z-10">
         <h1 className="mb-4 font-christmas text-8xl font-bold text-yellow-400" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>

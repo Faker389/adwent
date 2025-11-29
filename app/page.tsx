@@ -90,7 +90,7 @@ const Index = () => {
   }, [windowPositions]);
   if(!isOnline){
     return (
-      <div className="min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-red-950 flex items-center justify-center">
+      <div className="min-h-dvh bg-gradient-to-b from-red-950 via-red-900 to-red-950 flex items-center justify-center">
         <div className="text-center">
           <p className="font-christmas text-2xl text-red-400">Jesteś offline połącz się z internetem i spróbuj ponownie.</p>
           <button
@@ -106,7 +106,7 @@ const Index = () => {
   // Show loading screen while questions are being fetched
   if (!isLoadedQuestions||!isLoadedUser) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-red-950 flex items-center justify-center">
+      <div className="min-h-dvh bg-gradient-to-b from-red-950 via-red-900 to-red-950 flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-16 h-16 text-yellow-400 animate-spin mx-auto mb-4" />
           <p className="font-christmas text-2xl text-yellow-400">Ładowanie kalendarza...</p>
@@ -118,7 +118,7 @@ const Index = () => {
   // Show error if no questions loaded
   if (isLoadedQuestions && questions.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-red-950 flex items-center justify-center">
+      <div className="min-h-dvh bg-gradient-to-b from-red-950 via-red-900 to-red-950 flex items-center justify-center">
         <div className="text-center">
           <p className="font-christmas text-2xl text-red-400">Nie udało się załadować pytań.</p>
           <button
@@ -133,7 +133,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen   bg-gradient-to-b from-red-950 via-red-900 to-red-950 text-white overflow-x-hidden">
+    <div className="min-h-dvh bg-gradient-to-b from-red-950 via-red-900 to-red-950 text-white overflow-x-hidden">
       <Snowflakes />
 
       {/* Fixed Header with Navigation */}

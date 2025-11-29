@@ -16,7 +16,7 @@ function ResetPasswordContent() {
 
   if (!oobCode) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-950 via-red-900 to-red-950 p-4">
+      <div className="min-h-dvh flex items-center justify-center bg-gradient-to-br from-red-950 via-red-900 to-red-950 p-4">
         <div className="bg-gradient-to-b from-red-900/90 to-red-950/90 backdrop-blur-lg border-2 border-yellow-400/50 rounded-3xl p-8 shadow-2xl text-center">
           <h2 className="font-christmas text-3xl font-bold text-yellow-400 mb-4">Nieprawidłowy Link</h2>
           <p className="text-red-200 font-serif mb-6">Link resetowania hasła jest nieprawidłowy lub wygasł.</p>
