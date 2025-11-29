@@ -24,7 +24,7 @@ export const useQuestions = create<ProductStore>((set, get) => ({
         const data = snapshot.docs
           .map((doc) => doc.data() as Question)
           .sort((a, b) => a.questionNumber - b.questionNumber) // Sort by question number
-
+         
         set({ questions: data, isLoadedQuestions: true })
       },
       (error) => {
@@ -56,7 +56,7 @@ export const useUsers = create<UserStore>((set, get) => ({
 
     const unsub = onSnapshot(collection(db, "users"), (snapshot) => {
       const data = snapshot.docs.map((doc) => doc.data() as AppUser)
-      const tempData = data.filter((e)=>e.email!=="magkol.594@edu.erzeszow.pl")
+      const tempData = data.filter((e)=>e.email!=="magkol.594@edu.erzeszow.pl"&&e.email!=="magenta2@wp.pl")
       set({ users: tempData, isLoaded: true })
     })
     

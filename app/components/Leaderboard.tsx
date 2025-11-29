@@ -18,9 +18,16 @@ export const Leaderboard = () => {
   useEffect(() => {
     listenToUsers();
   }, []);
- 
+  const sortUsersByCorrectAnswers = (users: AppUser[]) => {
+    return users.sort((a, b) => {
+      const aCorrect = a.questions.filter(q => q.isCorrect === true).length;
+      const bCorrect = b.questions.filter(q => q.isCorrect === true).length;
+      return bCorrect - aCorrect; // highest first
+    });
+  };
   useEffect(() => {
-      setLeaderboard(users);
+    
+      setLeaderboard(sortUsersByCorrectAnswers(users));
   }, [users]);
   if (!isLoaded) {
     return (

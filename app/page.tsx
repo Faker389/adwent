@@ -9,7 +9,7 @@ import { LogOut, Trophy, Loader2 } from 'lucide-react';
 import { AppUser, Question } from './lib/userModel';
 import { getUserFromCookies, logoutUser } from './lib/cookies';
 import { auth, db, getCurrentUser } from './lib/firebase';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { useQuestions, useUser } from './lib/useQuestions';
 const Index = () => {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
@@ -24,6 +24,21 @@ const Index = () => {
   }
   useEffect(() => {
     getuser()
+    async function cos() {
+      const userRef = doc(db, "users", "wBnugahx0wb8KJNR0LJTuofHNkf1")
+
+      await updateDoc(userRef, {
+        questions:Array.from({length:24}).map((e,idx)=>{
+          return {
+            questionNumber:idx+1,
+            answer: null,
+            isCorrect: null,
+          }
+        })
+        
+      })
+      console.log("done")
+    }
   }, [ ]);
   // Start listening to questions on mount
   useEffect(() => {
@@ -36,9 +51,9 @@ const Index = () => {
   // Create a winding path layout - windows positioned to create an interesting journey
   const windowPositions = useMemo(() => {
     const basePositions: [number, number][] = [
-      [6, 8], [40, 5], [65, 10], [88, 6],
+      [5, 3], [40, 5], [65, 10], [90, 6],
       [85, 22], [60, 25], [35, 20], [12, 24],
-      [18, 38], [42, 42], [68, 36], [90, 40],
+      [18, 38], [42, 42], [72, 36], [90, 40],
       [82, 55], [55, 58], [30, 54], [8, 58],
       [20, 72], [48, 75], [72, 70], [92, 74],
       [78, 88], [50, 92], [25, 88], [1, 95],
@@ -138,17 +153,37 @@ const Index = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-red-950/80 via-red-900/60 to-red-950" />
         
-        <div className="relative z-10 text-center px-4">
-          <motion.div
+        <div className="relative z-10  text-center px-4">
+        <motion.div
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
+            className="space-y-8"
           >
-            <h1 className="font-christmas text-6xl sm:text-6xl md:text-7xl font-bold mb-6 text-yellow-400 drop-shadow-2xl" style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.5)' }}>
-            Adventskalender zum Deutschüben
+            <h1 className="font-christmas text-5xl sm:text-6xl md:text-7xl font-bold text-yellow-400 drop-shadow-2xl" style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.5)' }}>
+              Zapraszamy do udziału w konkursie<br />„Kalendarz Adwentowy"!
             </h1>
-            <p className="font-christma text-xl sm:text-2xl md:text-3xl mb-12 drop-shadow-lg text-white/90 italic">
-              24 Tage Wissen, Spaß und Gewinnen! ✨🎁
+            
+            <div className="max-w-3xl mx-auto bg-red-900/40 backdrop-blur-sm rounded-2xl p-6 border-2 border-yellow-400/30">
+              <h2 className="font-christmas text-2xl sm:text-3xl font-bold text-yellow-300 mb-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+                Zasady konkursu:
+              </h2>
+              <p className="font-christmas text-lg sm:text-xl text-white leading-relaxed">
+                Każdego dnia będzie czekało na was nowe okienko. Odpowiedzi należy udzielać w języku niemieckim. Każde okienko otworzy się w wyznaczonym dniu, a w razie pominięcia można cofnąć się jedynie o jeden dzień. Po otwarciu pytania czas na jego rozwiązanie to 60 minut.
+              </p>
+            </div>
+
+            <div className="max-w-3xl mx-auto bg-red-900/40 backdrop-blur-sm rounded-2xl p-6 border-2 border-yellow-400/30">
+              <h2 className="font-christmas text-2xl sm:text-3xl font-bold text-yellow-300 mb-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+                Nagrody:
+              </h2>
+              <p className="font-christmas text-lg sm:text-xl text-white leading-relaxed">
+                Dla trzech najlepszych uczestników przewidziane są nagrody. Dodatkowo zostaną wyróżnieni najlepsi uczniowie z każdej klasy.
+              </p>
+            </div>
+            
+            <p className="font-christmas text-4xl sm:text-5xl text-yellow-400 italic mt-6" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+              Viel Spaß!
             </p>
           </motion.div>
         </div>
@@ -170,19 +205,7 @@ const Index = () => {
 
       {/* Calendar Section */}
       <div className="relative bg-gradient-to-b from-red-950 via-red-900 py-12 sm:py-20 px-2 sm:px-4">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-          className="text-center mb-8 sm:mb-16"
-        >
-          <h2 className="font-christmas text-4xl sm:text-3xl md:text-4xl font-bold text-yellow-400 mb-4 px-2" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
-          Każdego dnia będzie czekało nowe okienko. Odpowiedzi trzeba udzielać w języku niemieckim. Każde okienko można otworzyć tylko w wyznaczonym dniu, a jeśli ktoś coś przegapi, może cofnąć się wyłącznie o jeden dzień. Po otwarciu pytania czas na rozwiązanie to 60 minut. Dla trzech najlepszych uczestników przewidziane są nagrody. Dodatkowo wyróżnieni zostaną najlepsi uczniowie z każdej klasy.
-          </h2>
-          <p className="font-christmas text-3xl  text-red-200 italic">
-          Viel Spaβ!
-          </p>
-        </motion.div>
+         
 
         {/* Calendar Grid with Path */}
         <div 

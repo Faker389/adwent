@@ -49,6 +49,7 @@ export const QuestionModal = ({
   const [loading, setLoading] = useState(false)
   const [timeLeft, setTimeLeft] = useState("")
   const [status, setStatus] = useState<QuestionStatus>("locked")
+  const [clickedImage, setClickedImage] = useState<string>("")
   const [countdown, setCountdown] = useState("")
   const [hourTimer, setHourTimer] = useState("")
   const [hourTimerExpired, setHourTimerExpired] = useState(false)
@@ -185,6 +186,7 @@ export const QuestionModal = ({
       })
 
       // Update the entire questions array
+      
       await updateDoc(userRef, {
         questions: updatedQuestions,
       })
@@ -292,7 +294,19 @@ export const QuestionModal = ({
   const isTrueFalseOption = (options: ABCOption | TrueFalseOption | undefined): options is TrueFalseOption => {
     return options !== undefined && "t" in options
   }
-
+  useEffect(() => {
+    if (clickedImage) {
+      // Disable scrolling
+      document.body.style.overflow = "hidden";
+    } else {
+      // Enable scrolling
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [clickedImage]);
+  
   const renderAnswerInput = () => {
     if (!question || !canAnswer) return null
 
@@ -376,7 +390,33 @@ export const QuestionModal = ({
   }
 
   return (
-    <AnimatePresence>
+    <AnimatePresence >
+      <>
+     {clickedImage && (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    className="fixed inset-0 z-[999] bg-black/80 flex justify-center items-center"
+  >
+    {/* Close button */}
+    <button
+      onClick={() => setClickedImage("")}
+      className="absolute top-6 right-6 text-white hover:text-gray-300"
+    >
+      <X className="w-10 h-10" />
+    </button>
+
+    {/* Image */}
+    <motion.img
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0.8, opacity: 0 }}
+      src={clickedImage}
+      className="max-h-[90vh] max-w-[90vw] rounded-xl shadow-2xl"
+    />
+  </motion.div>
+)}
       {isOpen && (
         <>
           {/* Backdrop */}
@@ -423,14 +463,14 @@ export const QuestionModal = ({
                     hourTimerExpired ? "bg-red-900/50 border-red-500" : "bg-green-900/30 border-green-500"
                   }`}
                 >
-                  <div className="flex items-center justify-center gap-2 text-sm mb-1">
+                  <div className="flex items-center justify-center   gap-2 mb-1">
                     <Clock className="w-4 h-4" />
                     <span className="text-white font-semibold">
                       {hourTimerExpired ? "Czas na odpowiedź minął!" : "Czas na odpowiedź:"}
                     </span>
                   </div>
                   <div
-                    className={`font-mono text-3xl font-bold tabular-nums ${
+                    className={`font-mono font-bold tabular-nums ${
                       hourTimerExpired ? "text-red-400" : "text-green-400"
                     }`}
                   >
@@ -454,17 +494,17 @@ export const QuestionModal = ({
                         : "text-green-400"
                 }`}
               >
-                <div className="flex items-center justify-center gap-2 text-sm mb-1">
+                <div className="flex items-center justify-center  sm:text-sm lg:text-2xl gap-2 text-sm mb-1">
                   {status === "expiring" && <AlertTriangle className="w-4 h-4" />}
                   {isLocked && <Lock className="w-4 h-4" />}
                   {!isLocked && !isExpired && <Clock className="w-4 h-4" />}
-                  <span>
+                  <span className=" sm:text-sm lg:text-2xl">
                     {isLocked && "Otwiera się za:"}
                     {isExpired && "Czas na odpowiedź minął"}
                     {!isLocked && !isExpired && (status === "expiring" ? "⚠️ Ostatnia szansa!" : "Dostępne przez:")}
                   </span>
                 </div>
-                {!isExpired && <div className="font-mono text-2xl font-bold tabular-nums">{countdown}</div>}
+                {!isExpired && <div className="font-mono  sm:text-sm lg:text-2xl font-bold tabular-nums">{countdown}</div>}
               </div>
 
               {/* Decorative divider */}
@@ -505,13 +545,18 @@ export const QuestionModal = ({
                         <img
                           src={question.image || "/placeholder.svg"}
                           alt={`Obrazek do pytania ${day}`}
+                          onClick={()=>setClickedImage(question.image!)}
                           className="max-w-full max-h-48 rounded-xl border-2 border-red-700"
                         />
                       </div>
                     )}
-                    <p className="text-lg text-center text-white font-serif leading-relaxed">
-                      {question?.question || "Brak pytania na ten dzień"}
-                    </p>
+                    <div>
+
+                      {question?.question.includes("&")?question.question.split("&").map((e,idx)=>{
+                        return <p key={idx} className="text-lg text-center text-white font-serif leading-relaxed">{e.replace(/&/g, '\n')}</p>
+                      }) :question?.question?<p className="text-lg text-center text-white font-serif leading-relaxed">{question.question}</p>:<p className="text-lg text-center text-white font-serif leading-relaxed">Brak pytania na ten dzień</p>}
+                    
+                      </div>
                   </>
                 )}
               </div>
@@ -561,7 +606,7 @@ export const QuestionModal = ({
             </motion.div>
           </div>
         </>
-      )}
+      )}</>
     </AnimatePresence>
   )
 }

@@ -141,8 +141,13 @@ export default function AdminLeaderboard() {
       throw error;
     }
    }
+   useEffect(()=>{
+    if(user?.email!=="magkol.594@edu.erzeszow.pl"){
+      window.location.href="/"
+      return;
+    }
+  },[user])
    function getUserAnswear(userAnswear:userQuestions,question:Question){
-     console.log(question.questionType,question.question)
       if(question.questionType==2){
         return userAnswear.answer;
       }else if(question.questionType==1){
@@ -241,7 +246,7 @@ export default function AdminLeaderboard() {
               ) : (
                 filteredUsers.map((user, index) => (
                   <motion.div
-                    key={user.id}
+                    key={index}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.05 }}

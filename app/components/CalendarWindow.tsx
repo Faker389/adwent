@@ -66,8 +66,8 @@ export const CalendarWindow = ({ day, questions, onClick, style, isAnswered = fa
         } else {
           // Question is open - show time until deadline
           const deadline = new Date(targetDate)
-          deadline.setDate(deadline.getDate() + 2)
-          deadline.setHours(23, 59, 59, 999)
+          deadline.setDate(deadline.getDate() )
+          deadline.setHours(23, 59, 59)
           const deadlineDiff = deadline.getTime() - now.getTime()
 
           if (deadlineDiff > 0) {
@@ -216,7 +216,7 @@ export const CalendarWindow = ({ day, questions, onClick, style, isAnswered = fa
         {!questionAnswered && status === "expiring" && <AlertTriangle className="w-2 h-2 sm:w-3 sm:h-3" />}
         {!questionAnswered && isLocked && <Clock className="w-2 h-2 sm:w-3 sm:h-3" />}
         {!questionAnswered && isClickable && !isExpired && <Clock className="w-2 h-2 sm:w-3 sm:h-3" />}
-        <span className="truncate max-w-[50px] sm:max-w-[70px]">
+        <span className="truncate max-w-[50px] text-[12px] md:text-[12px] lg:text-lg sm:max-w-[70px]">
           {questionAnswered ? "✓" : isExpired ? "✕" : currentTime}
         </span>
       </div>
