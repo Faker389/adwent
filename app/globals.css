@@ -57,7 +57,7 @@ html {
   min-height: 100vh;
   min-height: 100dvh;   /* ensures true fullscreen on mobile */
   overflow-x: hidden;
-  background-color: var(--color-background);
+  background-color: #460809;
 }
 
 body {
@@ -68,7 +68,7 @@ body {
   min-height: 100vh;
   min-height: 100dvh;   /* ensures true fullscreen on mobile */
   overflow-x: hidden;
-  background-color: var(--color-background);
+  background-color: #460809;
 }
 
 /* Ensure body's direct children fill the height */

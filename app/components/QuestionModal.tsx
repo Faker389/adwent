@@ -53,11 +53,22 @@ export const QuestionModal = ({
   const [countdown, setCountdown] = useState("")
   const [hourTimer, setHourTimer] = useState("")
   const [hourTimerExpired, setHourTimerExpired] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const { user, isLoadedUser, listenToUser } = useUser()
 
   useEffect(() => {
     listenToUser()
   }, [listenToUser])
+
+  // Track mobile status
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const question = questions[day - 1]
 
@@ -97,10 +108,12 @@ export const QuestionModal = ({
               const seconds = Math.floor((diff % (1000 * 60)) / 1000)
 
               if (days > 0) {
-                setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`)
+                setCountdown(isMobile ? `${days}d ${hours}h ${minutes}m` : `${days}d ${hours}h ${minutes}m ${seconds}s`)
               } else {
                 setCountdown(
-                  `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`,
+                  isMobile 
+                    ? `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`
+                    : `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`,
                 )
               }
             }
@@ -117,10 +130,12 @@ export const QuestionModal = ({
               const seconds = Math.floor((diff % (1000 * 60)) / 1000)
 
               if (days > 0) {
-                setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`)
+                setCountdown(isMobile ? `${days}d ${hours}h ${minutes}m` : `${days}d ${hours}h ${minutes}m ${seconds}s`)
               } else {
                 setCountdown(
-                  `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`,
+                  isMobile 
+                    ? `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`
+                    : `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`,
                 )
               }
             }
