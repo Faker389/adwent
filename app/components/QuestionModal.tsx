@@ -106,7 +106,7 @@ export const QuestionModal = ({
             }
           } else if (currentStatus === "available" || currentStatus === "expiring") {
             const deadline = new Date(openDate)
-            deadline.setDate(deadline.getDate() + 1)
+            deadline.setDate(deadline.getDate() )
             deadline.setHours(23, 59, 59, 999)
             const diff = deadline.getTime() - now.getTime()
 
