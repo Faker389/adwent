@@ -49,6 +49,9 @@
 .styled-scrollbar::-webkit-scrollbar {
   width: 8px;
 }
+body{
+  height: 100%;
+}
 html{
 background-color: purple;
 }
