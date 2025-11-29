@@ -49,7 +49,9 @@
 .styled-scrollbar::-webkit-scrollbar {
   width: 8px;
 }
-
+html{
+background-color: purple;
+}
 .styled-scrollbar::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 8px;

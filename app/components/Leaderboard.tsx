@@ -6,6 +6,7 @@ import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
 import { AppUser } from '../lib/userModel';
 import { useUsers } from '../lib/useQuestions';
+import useOnlineStatus from '../lib/useIsOnline';
 
 
 
@@ -14,6 +15,7 @@ import { useUsers } from '../lib/useQuestions';
 export const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState<AppUser[]>([]);
   const router = useRouter();
+  const isOnline = useOnlineStatus();
   const { isLoaded,listenToUsers,users} = useUsers();
   useEffect(() => {
     listenToUsers();
@@ -29,6 +31,21 @@ export const Leaderboard = () => {
     
       setLeaderboard(sortUsersByCorrectAnswers(users));
   }, [users]);
+  if(!isOnline){
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-red-950 flex items-center justify-center">
+        <div className="text-center">
+          <p className="font-christmas text-2xl text-red-400">Jesteś offline połącz się z internetem i spróbuj ponownie.</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-6 py-3 bg-yellow-400 text-black font-bold rounded-xl"
+          >
+            Spróbuj ponownie
+          </button>
+        </div>
+      </div>
+    );
+  }
   if (!isLoaded) {
     return (
       <div className="flex items-center justify-center min-h-screen">

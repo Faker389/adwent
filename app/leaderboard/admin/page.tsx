@@ -17,6 +17,7 @@ import { useQuestions, useUser, useUsers } from '@/app/lib/useQuestions';
 import { ABCOption, AppUser, Question } from '@/app/lib/userModel';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db, getCurrentUser } from '@/app/lib/firebase';
+import useOnlineStatus from '@/app/lib/useIsOnline';
 
 
 
@@ -34,6 +35,7 @@ export default function AdminLeaderboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<AppUser | null>(null);
+  const isOnline = useOnlineStatus();
   const [loadingAnswers, setLoadingAnswers] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
@@ -180,6 +182,21 @@ export default function AdminLeaderboard() {
       return (question.answer)
     }
  }
+ if(!isOnline){
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-red-950 flex items-center justify-center">
+      <div className="text-center">
+        <p className="font-christmas text-2xl text-red-400">Jesteś offline połącz się z internetem i spróbuj ponownie.</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-4 px-6 py-3 bg-yellow-400 text-black font-bold rounded-xl"
+        >
+          Spróbuj ponownie
+        </button>
+      </div>
+    </div>
+  );
+}
   if (!isLoaded||!isLoadedQuestions) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-red-950">
