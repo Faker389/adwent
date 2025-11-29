@@ -25,12 +25,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pl">
+    <html lang="pl" className="h-[100dvh]">
       <head>
       <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
       </head>
       <body
-        className={`${crimsonText.variable} ${mountainsOfChristmas.variable} h-[100dvh] antialiased`}
+        className={`${crimsonText.variable} ${mountainsOfChristmas.variable} h-full antialiased`}
       >
         {children}
       </body>
