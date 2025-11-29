@@ -59,7 +59,7 @@ export const CalendarWindow = ({ day, questions, onClick, style, isAnswered = fa
           if (days > 0) {
             setCurrentTime(`${days}d ${hours}h ${minutes}m`)
           } else if (hours > 0) {
-            setCurrentTime(`${hours}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`)
+            setCurrentTime(`${hours}:${minutes.toString().padStart(2, "0")}`)
           } else {
             setCurrentTime(`${minutes}:${seconds.toString().padStart(2, "0")}`)
           }
@@ -80,7 +80,7 @@ export const CalendarWindow = ({ day, questions, onClick, style, isAnswered = fa
               setCurrentTime(`${dDays}d ${dHours}h`)
             } else if (dHours > 0) {
               setCurrentTime(
-                `${dHours}:${dMinutes.toString().padStart(2, "0")}:${dSeconds.toString().padStart(2, "0")}`,
+                `${dHours}:${dMinutes.toString().padStart(2, "0")}`,
               )
             } else {
               setCurrentTime(`${dMinutes}:${dSeconds.toString().padStart(2, "0")}`)
