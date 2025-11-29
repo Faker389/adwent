@@ -61,7 +61,7 @@ html {
 }
 
 .min-h-dvh{
-  min-height: 100dvh !important;
+  min-height: 100dvh;
 }
 
 body {
