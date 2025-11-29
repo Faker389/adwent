@@ -133,7 +133,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-dvh bg-gradient-to-b from-red-950 via-red-900 to-red-950 text-white overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-red-950 text-white overflow-x-hidden">
       <Snowflakes />
 
       {/* Fixed Header with Navigation */}
@@ -163,43 +163,43 @@ const Index = () => {
       </header>
 
       {/* Hero Section */}
-      <div className="relative h-screen flex items-center justify-center overflow-hidden">
+      <div className="relative h-screen flex items-center justify-center overflow-hidden pt-20 sm:pt-24">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(/christmas-hero.jpg)` }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-red-950/80 via-red-900/60 to-red-950" />
         
-        <div className="relative z-10  text-center px-4">
+        <div className="relative z-10 text-center px-4 py-4">
         <motion.div
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="space-y-8"
           >
-            <h1 className="font-christmas text-5xl sm:text-6xl md:text-7xl font-bold text-yellow-400 drop-shadow-2xl" style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.5)' }}>
+            <h1 className="font-christmas text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-yellow-400 drop-shadow-2xl px-2" style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.5)' }}>
               Zapraszamy do udziału w konkursie<br />„Kalendarz Adwentowy"!
             </h1>
             
-            <div className="max-w-3xl mx-auto bg-red-900/40 backdrop-blur-sm rounded-2xl p-6 border-2 border-yellow-400/30">
-              <h2 className="font-christmas text-2xl sm:text-3xl font-bold text-yellow-300 mb-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+            <div className="max-w-3xl mx-auto bg-red-900/40 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border-2 border-yellow-400/30">
+              <h2 className="font-christmas text-xl sm:text-2xl md:text-3xl font-bold text-yellow-300 mb-2 sm:mb-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
                 Zasady konkursu:
               </h2>
-              <p className="font-christmas text-lg sm:text-xl text-white leading-relaxed">
+              <p className="font-christmas text-sm sm:text-base md:text-lg lg:text-xl text-white leading-relaxed">
                 Każdego dnia będzie czekało na was nowe okienko. Odpowiedzi należy udzielać w języku niemieckim. Każde okienko otworzy się w wyznaczonym dniu, a w razie pominięcia można cofnąć się jedynie o jeden dzień. Po otwarciu pytania czas na jego rozwiązanie to 60 minut.
               </p>
             </div>
 
-            <div className="max-w-3xl mx-auto bg-red-900/40 backdrop-blur-sm rounded-2xl p-6 border-2 border-yellow-400/30">
-              <h2 className="font-christmas text-2xl sm:text-3xl font-bold text-yellow-300 mb-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+            <div className="max-w-3xl mx-auto bg-red-900/40 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border-2 border-yellow-400/30">
+              <h2 className="font-christmas text-xl sm:text-2xl md:text-3xl font-bold text-yellow-300 mb-2 sm:mb-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
                 Nagrody:
               </h2>
-              <p className="font-christmas text-lg sm:text-xl text-white leading-relaxed">
+              <p className="font-christmas text-sm sm:text-base md:text-lg lg:text-xl text-white leading-relaxed">
                 Dla trzech najlepszych uczestników przewidziane są nagrody. Dodatkowo zostaną wyróżnieni najlepsi uczniowie z każdej klasy.
               </p>
             </div>
             
-            <p className="font-christmas text-4xl sm:text-5xl text-yellow-400 italic mt-6" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+            <p className="font-christmas text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-yellow-400 italic mt-4 sm:mt-6" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
               Viel Spaß!
             </p>
           </motion.div>

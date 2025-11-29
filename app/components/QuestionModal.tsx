@@ -315,7 +315,7 @@ export const QuestionModal = ({
       const options = question.options
       return (
         <div className="space-y-3 ">
-          <Label className="text-white font-serif text-base">Wybierz odpowiedź:</Label>
+          <Label className="text-white font-serif text-sm sm:text-base">Wybierz odpowiedź:</Label>
           <div className="space-y-2">
             {["a", "b", "c"].map((key) => (
               <button
@@ -342,7 +342,7 @@ export const QuestionModal = ({
       const options = question.options
       return (
         <div className="space-y-3">
-          <Label className="text-white font-serif text-base">Wybierz odpowiedź:</Label>
+          <Label className="text-white font-serif text-sm sm:text-base">Wybierz odpowiedź:</Label>
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
@@ -374,8 +374,8 @@ export const QuestionModal = ({
     // Type 2: Text Input (default)
     return (
       <div className="space-y-2">
-        <Label htmlFor="answer" className="text-white font-serif text-base">
-          Twoja odpowiedź: *<span className="text-sm">(Odpowiedzi udziel w języku niemieckim)</span>
+        <Label htmlFor="answer" className="text-white font-serif text-sm sm:text-base">
+          Twoja odpowiedź: *<span className="text-xs sm:text-sm">(Odpowiedzi udziel w języku niemieckim)</span>
         </Label>
         <Input
           id="answer"
@@ -435,7 +435,7 @@ export const QuestionModal = ({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="relative overflow-x-hidden w-full max-w-lg max-h-[90vh] overflow-y-auto bg-gradient-to-b from-red-900 to-red-950 border-2 border-yellow-400/50 rounded-3xl p-8 shadow-2xl styled-scrollbar"
+              className="relative overflow-x-hidden w-full max-w-lg max-h-[90vh] overflow-y-auto bg-gradient-to-b from-red-900 to-red-950 border-2 border-yellow-400/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl styled-scrollbar"
               >
               {/* Close button */}
               <button
@@ -446,31 +446,31 @@ export const QuestionModal = ({
               </button>
 
               {/* Header */}
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <Sparkles className="w-8 h-8 text-yellow-400 animate-pulse" />
+              <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                <Sparkles className="w-5 h-5 sm:w-8 sm:h-8 text-yellow-400 animate-pulse" />
                 <h2
-                  className="font-christmas text-4xl font-bold text-yellow-400"
+                  className="font-christmas text-2xl sm:text-3xl md:text-4xl font-bold text-yellow-400"
                   style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.5)" }}
                 >
                   Dzień {day}
                 </h2>
-                <Sparkles className="w-8 h-8 text-yellow-400 animate-pulse" style={{ animationDelay: "1s" }} />
+                <Sparkles className="w-5 h-5 sm:w-8 sm:h-8 text-yellow-400 animate-pulse" style={{ animationDelay: "1s" }} />
               </div>
 
               {!isAnswered && !isLocked && !isExpired && (
                 <div
-                  className={`text-center mb-4 p-4 rounded-xl border-2 ${
+                  className={`text-center mb-3 sm:mb-4 p-3 sm:p-4 rounded-xl border-2 ${
                     hourTimerExpired ? "bg-red-900/50 border-red-500" : "bg-green-900/30 border-green-500"
                   }`}
                 >
-                  <div className="flex items-center justify-center   gap-2 mb-1">
-                    <Clock className="w-4 h-4" />
-                    <span className="text-white font-semibold">
+                  <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1">
+                    <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="text-white font-semibold text-xs sm:text-sm">
                       {hourTimerExpired ? "Czas na odpowiedź minął!" : "Czas na odpowiedź:"}
                     </span>
                   </div>
                   <div
-                    className={`font-mono font-bold tabular-nums ${
+                    className={`font-mono font-bold tabular-nums text-base sm:text-lg md:text-xl ${
                       hourTimerExpired ? "text-red-400" : "text-green-400"
                     }`}
                   >
@@ -484,7 +484,7 @@ export const QuestionModal = ({
 
               {/* Real-time countdown */}
               <div
-                className={`text-center mb-4 ${
+                className={`text-center mb-3 sm:mb-4 ${
                   status === "expiring"
                     ? "text-orange-400"
                     : isExpired
@@ -494,67 +494,67 @@ export const QuestionModal = ({
                         : "text-green-400"
                 }`}
               >
-                <div className="flex items-center justify-center  sm:text-sm lg:text-2xl gap-2 text-sm mb-1">
-                  {status === "expiring" && <AlertTriangle className="w-4 h-4" />}
-                  {isLocked && <Lock className="w-4 h-4" />}
-                  {!isLocked && !isExpired && <Clock className="w-4 h-4" />}
-                  <span className=" sm:text-sm lg:text-2xl">
+                <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1 text-xs sm:text-sm md:text-base lg:text-lg">
+                  {status === "expiring" && <AlertTriangle className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />}
+                  {isLocked && <Lock className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />}
+                  {!isLocked && !isExpired && <Clock className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />}
+                  <span className="break-words">
                     {isLocked && "Otwiera się za:"}
                     {isExpired && "Czas na odpowiedź minął"}
                     {!isLocked && !isExpired && (status === "expiring" ? "⚠️ Ostatnia szansa!" : "Dostępne przez:")}
                   </span>
                 </div>
-                {!isExpired && <div className="font-mono  sm:text-sm lg:text-2xl font-bold tabular-nums">{countdown}</div>}
+                {!isExpired && <div className="font-mono text-sm sm:text-base md:text-lg lg:text-xl font-bold tabular-nums break-all">{countdown}</div>}
               </div>
 
               {/* Decorative divider */}
-              <div className="flex items-center gap-2 mb-6">
+              <div className="flex items-center gap-2 mb-4 sm:mb-6">
                 <div className="flex-1 h-px bg-gradient-to-r from-transparent via-yellow-400/50 to-transparent" />
-                <span className="text-yellow-400 text-xl">❄️</span>
+                <span className="text-yellow-400 text-base sm:text-xl">❄️</span>
                 <div className="flex-1 h-px bg-gradient-to-r from-transparent via-yellow-400/50 to-transparent" />
               </div>
 
               {/* Question */}
-              <div className="mb-6 p-6 bg-red-800/50 rounded-2xl border border-red-700">
+              <div className="mb-4 sm:mb-6 p-4 sm:p-6 bg-red-800/50 rounded-2xl border border-red-700">
                 {isAnswered ? (
                   <div className="text-center">
-                    <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-4" />
-                    <p className="text-lg text-green-400 font-serif font-bold mb-2">
+                    <CheckCircle className="w-8 h-8 sm:w-12 sm:h-12 text-green-400 mx-auto mb-3 sm:mb-4" />
+                    <p className="text-base sm:text-lg text-green-400 font-serif font-bold mb-2">
                       ✅ Odpowiedziałeś już na to pytanie
                     </p>
-                    <p className="text-sm text-gray-300">Twoja odpowiedź została zapisana i będzie oceniona</p>
+                    <p className="text-xs sm:text-sm text-gray-300">Twoja odpowiedź została zapisana i będzie oceniona</p>
                   </div>
                 ) : isLocked ? (
                   <div className="text-center">
-                    <Lock className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-lg text-gray-400 font-serif">To pytanie zostanie odblokowane</p>
-                    <p className="text-xl text-yellow-400 font-bold mt-2">{formatOpenDate()}</p>
+                    <Lock className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
+                    <p className="text-base sm:text-lg text-gray-400 font-serif">To pytanie zostanie odblokowane</p>
+                    <p className="text-lg sm:text-xl text-yellow-400 font-bold mt-2">{formatOpenDate()}</p>
                   </div>
                 ) : hourTimerExpired ? (
                   <div className="text-center">
-                    <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-                    <p className="text-lg text-red-400 font-serif font-bold">⏰ Czas minął!</p>
-                    <p className="text-sm text-gray-300 mt-2">Minęła godzina od otwarcia tego pytania</p>
+                    <AlertTriangle className="w-8 h-8 sm:w-12 sm:h-12 text-red-400 mx-auto mb-3 sm:mb-4" />
+                    <p className="text-base sm:text-lg text-red-400 font-serif font-bold">⏰ Czas minął!</p>
+                    <p className="text-xs sm:text-sm text-gray-300 mt-2">Minęła godzina od otwarcia tego pytania</p>
                   </div>
                 ) : questions.length === 0 ? (
-                  <p className="text-lg text-center text-gray-400 font-serif">Ładowanie pytania...</p>
+                  <p className="text-base sm:text-lg text-center text-gray-400 font-serif">Ładowanie pytania...</p>
                 ) : (
                   <>
                     {question?.image && (
-                      <div className="mb-4 flex justify-center">
+                      <div className="mb-3 sm:mb-4 flex justify-center">
                         <img
                           src={question.image || "/placeholder.svg"}
                           alt={`Obrazek do pytania ${day}`}
                           onClick={()=>setClickedImage(question.image!)}
-                          className="max-w-full max-h-48 rounded-xl border-2 border-red-700"
+                          className="max-w-full max-h-32 sm:max-h-48 rounded-xl border-2 border-red-700"
                         />
                       </div>
                     )}
                     <div>
 
                       {question?.question.includes("&")?question.question.split("&").map((e,idx)=>{
-                        return <p key={idx} className="text-lg text-center text-white font-serif leading-relaxed">{e.replace(/&/g, '\n')}</p>
-                      }) :question?.question?<p className="text-lg text-center text-white font-serif leading-relaxed">{question.question}</p>:<p className="text-lg text-center text-white font-serif leading-relaxed">Brak pytania na ten dzień</p>}
+                        return <p key={idx} className="text-sm sm:text-base md:text-lg text-center text-white font-serif leading-relaxed">{e.replace(/&/g, '\n')}</p>
+                      }) :question?.question?<p className="text-sm sm:text-base md:text-lg text-center text-white font-serif leading-relaxed">{question.question}</p>:<p className="text-sm sm:text-base md:text-lg text-center text-white font-serif leading-relaxed">Brak pytania na ten dzień</p>}
                     
                       </div>
                   </>
@@ -563,33 +563,33 @@ export const QuestionModal = ({
 
               {/* Form */}
               {canAnswer ? (
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                   {renderAnswerInput()}
 
                   <Button
                     type="submit"
                     disabled={loading || !answer.trim()}
-                    className="w-full h-12 bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black font-bold text-lg rounded-xl shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full h-10 sm:h-12 bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black font-bold text-sm sm:text-base md:text-lg rounded-xl shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? "Wysyłanie..." : "Wyślij odpowiedź 🎁"}
                   </Button>
                 </form>
               ) : isExpired || hourTimerExpired || isAnswered ? (
-                <div className="text-center py-4">
-                  <p className="text-red-400 font-serif mb-4">
+                <div className="text-center py-3 sm:py-4">
+                  <p className="text-sm sm:text-base text-red-400 font-serif mb-3 sm:mb-4">
                     {isAnswered
                       ? "Już odpowiedziałeś na to pytanie."
                       : hourTimerExpired
                         ? "Minęła godzina od otwarcia pytania."
                         : "Czas na odpowiedź na to pytanie już minął."}
                   </p>
-                  <Button onClick={onClose} className="bg-red-800 hover:bg-red-700 text-white">
+                  <Button onClick={onClose} className="bg-red-800 hover:bg-red-700 text-white text-sm sm:text-base">
                     Zamknij
                   </Button>
                 </div>
               ) : (
-                <div className="text-center py-4">
-                  <Button onClick={onClose} className="bg-red-800 hover:bg-red-700 text-white">
+                <div className="text-center py-3 sm:py-4">
+                  <Button onClick={onClose} className="bg-red-800 hover:bg-red-700 text-white text-sm sm:text-base">
                     Zamknij
                   </Button>
                 </div>
