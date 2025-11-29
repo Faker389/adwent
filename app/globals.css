@@ -3,7 +3,7 @@
 /* Define theme colors for Tailwind v4 */
 @theme {
   /* Christmas colors */
-  --color-background: hsl(355 25% 8%);
+  --color-background: #450a0a;
   --color-foreground: hsl(0 0% 98%);
 
   --color-card: hsl(355 20% 12%);
@@ -53,31 +53,27 @@ html {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100dvh;
+  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: hidden;
-  background-color: #460809;
+  background-color: var(--color-background);
 }
-#__next{
-  height: 100dvh;
-margin: 0;
-padding: 0;
-}
+
 .min-h-dvh{
-  min-height: calc(var(--vh, 1vh) * 100);
+  min-height: 100dvh;
 }
+
 body {
   margin: 0;
-  height: 100dvh;
   padding: 0;
   width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: hidden;
-  background: linear-gradient(
-    to bottom,
-    rgba(83, 14, 15, 0.8),
-    rgba(127, 29, 29, 0.6),
-    rgba(83, 14, 15, 1)
-  );
-  }
+  background-color: var(--color-background);
+}
 
 /* Ensure body's direct children fill the height */
 body > * {

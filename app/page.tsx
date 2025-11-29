@@ -133,7 +133,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-red-950 text-white overflow-x-hidden">
+    <div className="min-h-dvh bg-gradient-to-b from-red-950 via-red-900 to-red-950 text-white overflow-x-hidden">
       <Snowflakes />
 
       {/* Fixed Header with Navigation */}

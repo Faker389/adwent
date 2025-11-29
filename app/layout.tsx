@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Crimson_Text, Mountains_of_Christmas } from "next/font/google";
 import "./globals.css";
-import TempLayout from "./tempLayout";
 
 const crimsonText = Crimson_Text({
   variable: "--font-crimson",
@@ -33,9 +32,7 @@ export default function RootLayout({
       <body
         className={`${crimsonText.variable} ${mountainsOfChristmas.variable} h-full antialiased`}
       >
-        <TempLayout>
         {children}
-        </TempLayout>
       </body>
     </html>
   );
