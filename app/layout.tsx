@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Crimson_Text, Mountains_of_Christmas } from "next/font/google";
 import "./globals.css";
-
+import { Analytics } from "@vercel/analytics/next"
 const crimsonText = Crimson_Text({
   variable: "--font-crimson",
   subsets: ["latin"],
@@ -33,6 +33,7 @@ export default function RootLayout({
         className={`${crimsonText.variable} ${mountainsOfChristmas.variable} h-full antialiased`}
       >
         {children}
+        <Analytics />
       </body>
     </html>
   );
