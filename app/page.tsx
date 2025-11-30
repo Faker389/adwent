@@ -25,24 +25,6 @@ const Index = () => {
   }
   const isOnline = useOnlineStatus();
 
-  useEffect(() => {
-    getuser()
-    async function cos() {
-      const userRef = doc(db, "users", "gofY03F90AOLLocPqWG4jFcZxhD3")
-
-      await updateDoc(userRef, {
-        questions:Array.from({length:24}).map((e,idx)=>{
-          return {
-            questionNumber:idx+1,
-            answer: null,
-            isCorrect: null,
-          }
-        })
-        
-      })
-      console.log("done")
-    }
-  }, [ ]);
   // Start listening to questions on mount
   useEffect(() => {
     listenToQuestions()
