@@ -57,7 +57,7 @@ export const CalendarWindow = ({ day, questions, onClick, style, isAnswered = fa
           const seconds = Math.floor((diff % (1000 * 60)) / 1000)
 
           if (days > 0) {
-            setCurrentTime(`${days}d ${hours}h ${minutes}m`)
+            setCurrentTime(`${days}d ${hours}h`)
           } else if (hours > 0) {
             setCurrentTime(`${hours}:${minutes.toString().padStart(2, "0")}`)
           } else {
