@@ -18,11 +18,15 @@ const LeaderboardPage = () => {
     listenToUser()
   },[listenToUser])
   useEffect(()=>{
-    if(user?.email!=="magkol.594@edu.erzeszow.pl"&&user?.email!=="michal200614@gmail.com"){
+    // Only check email after user data is loaded
+    if(!isLoadedUser) return;
+    
+    // If user is not loaded or email doesn't match allowed emails, redirect
+    if(!user || (user.email!=="magkol.594@edu.erzeszow.pl"&&user.email!=="michal200614@gmail.com")){
       window.location.href="/"
       return;
     }
-  },[user])
+  },[user, isLoadedUser])
   useEffect(()=>{
     getuser()
   },[])
