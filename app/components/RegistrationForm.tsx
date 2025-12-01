@@ -183,7 +183,7 @@ export const RegistrationForm = ({showAlert}:{showAlert :(e: string,e2:"error" |
             <SelectTrigger className="bg-red-800/50 z-50 border-red-700  text-white h-12 rounded-xl focus:border-yellow-400">
               <SelectValue placeholder="Wybierz klasę" />
             </SelectTrigger>
-            <SelectContent className="bg-red-900 border-red-700">
+            <SelectContent className="bg-red-900 border-red-700 h-72">
             <SelectItem value="1AT">1AT</SelectItem>
               <SelectItem value="1BT">1BT</SelectItem>
               <SelectItem value="1DT">1DT</SelectItem>
