@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoginForm } from '../components/LoginForm';
 import { RegistrationForm } from '../components/RegistrationForm';
@@ -19,7 +19,7 @@ const Auth = () => {
   const [mounted, setMounted] = useState(false);
   const [alerts, setAlerts] = useState<Alert[]>([])
   const isOnline = useOnlineStatus();
-  const showAlert = (message: string, type: 'error' | 'success' | 'warning' = 'error') => {
+  const showAlert = useCallback((message: string, type: 'error' | 'success' | 'warning' = 'error') => {
     const newAlert: Alert = {
       id: crypto.randomUUID(),
       message,
@@ -31,7 +31,7 @@ const Auth = () => {
     setTimeout(() => {
       setAlerts(prev => prev.filter(alert => alert.id !== newAlert.id))
     }, 3000)
-  }
+  }, [])
   const getAlertStyles = (type: 'error' | 'success' | 'warning') => {
     switch (type) {
       case 'success':

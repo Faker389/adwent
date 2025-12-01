@@ -183,7 +183,7 @@ export const RegistrationForm = ({showAlert}:{showAlert :(e: string,e2:"error" |
             <SelectTrigger className="bg-red-800/50 z-50 border-red-700  text-white h-12 rounded-xl focus:border-yellow-400">
               <SelectValue placeholder="Wybierz klasę" />
             </SelectTrigger>
-            <SelectContent className="bg-red-900 border-red-700 max-h-[min(70vh,420px)] overflow-y-auto">
+            <SelectContent className="bg-red-900 border-red-700 max-h-64 overflow-y-auto">
             <SelectItem value="1AT">1AT</SelectItem>
               <SelectItem value="1BT">1BT</SelectItem>
               <SelectItem value="1DT">1DT</SelectItem>
@@ -220,20 +220,29 @@ export const RegistrationForm = ({showAlert}:{showAlert :(e: string,e2:"error" |
           </Select>
         </div>
 
-        <div className="space-y-2 relative">
+        <div className="space-y-2">
           <Label htmlFor="password" className="text-white font-serif">
             Hasło
           </Label>
-          <Input
-            id="password"
-            type={showPassword?"text":"password"}
-            value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            placeholder="••••••••"
-            className="bg-red-800/50 border-red-700 text-white placeholder:text-red-300/50 h-12 rounded-xl focus:border-yellow-400"
-            required
-          />
-          {showPassword?<Eye onClick={()=>setShowPassword(!showPassword)} className='w-5 h-5 absolute top-1/2 right-3 z-50' />:<EyeClosed onClick={()=>setShowPassword(!showPassword)} className='w-5 h-5 absolute top-1/2 right-3 z-50' />}
+          <div className="relative">
+            <Input
+              id="password"
+              type={showPassword?"text":"password"}
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              placeholder="••••••••"
+              className="bg-red-800/50 border-red-700 text-white placeholder:text-red-300/50 h-12 rounded-xl focus:border-yellow-400 pr-12"
+              required
+              autoComplete="current-password"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute top-1/2 -translate-y-1/2 right-3 text-white hover:text-yellow-400 transition-colors"
+            >
+              {showPassword ? <EyeClosed className='w-5 h-5' /> : <Eye className='w-5 h-5' />}
+            </button>
+          </div>
         </div>
 
         <Button

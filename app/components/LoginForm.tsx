@@ -125,7 +125,7 @@ export const LoginForm = ({ onSuccess,showAlert }: LoginFormProps) => {
             className="bg-red-800/50 border-red-700 text-white placeholder:text-red-300/50 h-12 rounded-xl focus:border-yellow-400"
             required
           />
-          {showPassword?<Eye onClick={()=>setShowPassword(!showPassword)} className='w-5 h-5 absolute top-1/2 right-3 z-50' />:<EyeClosed onClick={()=>setShowPassword(!showPassword)} className='w-5 h-5 absolute top-1/2 right-3 z-50' />}
+          {!showPassword?<Eye onClick={()=>setShowPassword(!showPassword)} className='w-5 h-5 absolute top-1/2 right-3 z-50' />:<EyeClosed onClick={()=>setShowPassword(!showPassword)} className='w-5 h-5 absolute top-1/2 right-3 z-50' />}
 
         </div>
 
