@@ -175,12 +175,12 @@ export const RegistrationForm = ({showAlert}:{showAlert :(e: string,e2:"error" |
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 relative">
           <Label htmlFor="class" className="text-white font-serif">
             Klasa
           </Label>
           <Select value={formData.class} onValueChange={(value: string) => setFormData({ ...formData, class: value })}>
-            <SelectTrigger className="bg-red-800/50 border-red-700 text-white h-12 rounded-xl focus:border-yellow-400">
+            <SelectTrigger className="bg-red-800/50 z-50 border-red-700  text-white h-12 rounded-xl focus:border-yellow-400">
               <SelectValue placeholder="Wybierz klasę" />
             </SelectTrigger>
             <SelectContent className="bg-red-900 border-red-700">
