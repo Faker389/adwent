@@ -34,7 +34,7 @@ export const RegistrationForm = ({showAlert}:{showAlert :(e: string,e2:"error" |
   
       return uid; // return uid instead of true
     } catch (error) {
-      console.error(error);
+      showAlert("Nie udało sie zarejestrować","error")
       return null; // return null instead of false
     }
   }
@@ -57,6 +57,7 @@ export const RegistrationForm = ({showAlert}:{showAlert :(e: string,e2:"error" |
       await setDoc(doc(db, "users", uid), data, { merge: true });
       return true
     } catch (error) {
+      showAlert("Nie udało sie zapisać użytkownika","error")
       return null
     }
   }

@@ -18,7 +18,7 @@ const LeaderboardPage = () => {
     listenToUser()
   },[listenToUser])
   useEffect(()=>{
-    if(user?.email!=="magkol.594@edu.erzeszow.pl"){
+    if(user?.email!=="magkol.594@edu.erzeszow.pl"&&user?.email!=="michal200614@gmail.com"){
       window.location.href="/"
       return;
     }
