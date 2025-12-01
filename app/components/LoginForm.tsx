@@ -58,11 +58,11 @@ export const LoginForm = ({ onSuccess,showAlert }: LoginFormProps) => {
       onSuccess?.();
       window.location.href="/"
 
-    setLoading(false);
     } catch (error) {
       showAlert("Nie udało się zalogować!","error")
-    setLoading(false);
       return;
+    }finally{
+      setLoading(false);
     }
     // Simulate login delay
     

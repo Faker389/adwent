@@ -23,7 +23,6 @@ const icons = [Gift, Star, Sparkles, TreePine]
 export const CalendarWindow = ({ day, questions, onClick, style, isAnswered = false }: CalendarWindowProps) => {
   const Icon = icons[day % icons.length]
   const isSpecialDay = day % 5 === 0 || day === 24
-  const [timeLeft, setTimeLeft] = useState("")
   const [status, setStatus] = useState<QuestionStatus>("locked")
   const [currentTime, setCurrentTime] = useState("")
   const { user } = useUser()
@@ -36,7 +35,6 @@ export const CalendarWindow = ({ day, questions, onClick, style, isAnswered = fa
     const updateStatus = () => {
       if (questions.length > 0) {
         setStatus(getQuestionStatus(day, questions))
-        setTimeLeft(getTimeRemaining(day, questions))
       }
 
       // Format current countdown as real-time clock
@@ -93,6 +91,7 @@ export const CalendarWindow = ({ day, questions, onClick, style, isAnswered = fa
     }
 
     updateStatus()
+    // Update once per second – cheap enough but we still clean up carefully
     const interval = setInterval(updateStatus, 1000)
     return () => clearInterval(interval)
   }, [day, questions, question])

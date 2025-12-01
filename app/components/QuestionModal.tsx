@@ -11,7 +11,7 @@ import { useState, useEffect } from "react"
 import { toast } from "../hooks/use-toast"
 import { getQuestionStatus, getTimeRemaining, canAnswerQuestion, type QuestionStatus } from "../lib/questions"
 import type { Question, ABCOption, TrueFalseOption, AppUser } from "../lib/userModel"
-import { db } from "../lib/firebase"
+import { db, auth } from "../lib/firebase"
 import { useUser } from "../lib/useQuestions"
 import {
   startQuestionTimer,
@@ -47,7 +47,6 @@ export const QuestionModal = ({
 }: QuestionModalProps) => {
   const [answer, setAnswer] = useState("")
   const [loading, setLoading] = useState(false)
-  const [timeLeft, setTimeLeft] = useState("")
   const [status, setStatus] = useState<QuestionStatus>("locked")
   const [clickedImage, setClickedImage] = useState<string>("")
   const [countdown, setCountdown] = useState("")
@@ -85,7 +84,6 @@ export const QuestionModal = ({
     if (isOpen && questions.length > 0) {
       const updateStatus = () => {
         setStatus(getQuestionStatus(day, questions))
-        setTimeLeft(getTimeRemaining(day, questions))
 
         if (!isAnswered) {
           const remaining = getQuestionTimeRemaining(day)
@@ -176,9 +174,15 @@ export const QuestionModal = ({
     return null
   }
 
-  async function updateUserQuestion(questionNumber: number, answer: string, isCorrect: boolean) {
+  async function updateUserQuestion(questionNumber: number, answer: string, isCorrect: boolean | null) {
     try {
-      const userRef = doc(db, "users", user?.id!)
+      // Prefer the authenticated Firebase user ID for the document path
+      const uid = auth.currentUser?.uid
+      if (!uid) {
+        throw new Error("No authenticated user found")
+      }
+
+      const userRef = doc(db, "users", uid)
 
       // Get current user data
       const userSnap = await getDoc(userRef)
@@ -187,13 +191,13 @@ export const QuestionModal = ({
       }
 
       const userData = userSnap.data() as AppUser
-
+      console.log(userData)
       // Find and update the specific question
       const updatedQuestions = userData.questions.map((q) => {
         if (q.questionNumber === questionNumber) {
           return {
             ...q,
-            answer:answer.toLowerCase(),
+            answer: answer.toLowerCase(),
             isCorrect,
           }
         }

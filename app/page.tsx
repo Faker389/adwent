@@ -245,7 +245,11 @@ const Index = () => {
       {/* Question Modal */}
       <QuestionModal
         day={selectedDay || 1}
-        isAnswered={user?.questions[(selectedDay || 1)-1].answer!=null}
+        isAnswered={
+          !!user?.questions?.find(
+            (q) => q.questionNumber === (selectedDay || 1),
+          )?.answer
+        }
         questions={questions}
         isOpen={selectedDay !=null}
         onClose={() => setSelectedDay(null)}
