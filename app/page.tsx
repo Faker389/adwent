@@ -24,7 +24,9 @@ const Index = () => {
     }
   }
   const isOnline = useOnlineStatus();
-
+  useEffect(()=>{
+    getuser()
+  },[])
   // Start listening to questions on mount
   useEffect(() => {
     listenToQuestions()
