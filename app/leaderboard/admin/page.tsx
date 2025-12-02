@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, CheckCircle, XCircle, Edit } from 'lucide-react';
 import { Button } from "../../components/ui/button";
@@ -33,8 +33,9 @@ export default function AdminLeaderboard() {
   const [filteredUsers, setFilteredUsers] = useState<AppUser[]>([]);
   const { user, isLoadedUser, listenToUser } = useUser();
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [selectedUser, setSelectedUser] = useState<AppUser | null>(null);
+  const [selectedQuestionsToApprove, setSelectedQuestionsToApprove] = useState<number[]>([]);
   const isOnline = useOnlineStatus();
   const [loadingAnswers, setLoadingAnswers] = useState(false);
   const router = useRouter();
@@ -46,9 +47,12 @@ export default function AdminLeaderboard() {
   useEffect(() => {
     listenToUsers();
   }, []);
- 
-  
-
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchQuery(debouncedSearch)
+    }, 150)
+    return () => clearTimeout(timer)
+  }, [debouncedSearch])
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setFilteredUsers(users);
@@ -81,67 +85,15 @@ export default function AdminLeaderboard() {
   useEffect(()=>{
     listenToUser()
   },[listenToUser])
-  useEffect(()=>{
-    // if(user?.email!=="magkol.594@edu.erzeszow.pl"){
-    //   window.location.href="/"
-    //   return;
-    // }
-  },[user])
+
   useEffect(()=>{
     getuser()
   },[])
   const handleUserClick = (user: AppUser) => {
     setSelectedUser(user);
+    setSelectedQuestionsToApprove([]);
   };
 
-  async function updateUserQuestion(
-    questionNumber: number,
-    answer: string,
-    isCorrect: boolean
-   ) {
-    try {
-      const userRef = doc(db, 'users', selectedUser?.id!);
-      
-      // Get current user data
-      const userSnap = await getDoc(userRef);
-      if (!userSnap.exists()) {
-        throw new Error('User document not found');
-      }
-   
-      const userData = userSnap.data() as AppUser ;
-      
-      // Find and update the specific question
-      const updatedQuestions = questions[questionNumber-1].questionType==2?
-      userData.questions.map((q) => {
-        if (q.questionNumber === questionNumber) {
-          return {
-            ...q,
-            isCorrect,
-          };
-        }
-        return q;
-      }):userData.questions.map((q) => {
-        if (q.questionNumber === questionNumber) {
-          return {
-            ...q,
-            answer,
-            isCorrect,
-          };
-        }
-        return q;
-      });
-      // Update the entire questions array
-      await updateDoc(userRef, {
-        questions: updatedQuestions,
-      });
-      setSelectedUser(null)
-      console.log(`Question ${questionNumber} updated successfully`);
-      return { success: true };
-    } catch (error) {
-      console.error('Error updating question:', error);
-      throw error;
-    }
-   }
    useEffect(()=>{
     // Only check email after user data is loaded
     if(!isLoadedUser) return;
@@ -152,6 +104,53 @@ export default function AdminLeaderboard() {
       return;
     }
   },[user, isLoadedUser])
+
+  async function handleApproveSelectedQuestions() {
+    if (!selectedUser || selectedQuestionsToApprove.length === 0) return;
+    try {
+      setLoadingAnswers(true);
+
+      // Build a single updated questions array and write once to Firestore
+      const userRef = doc(db, "users", selectedUser.id);
+      const userSnap = await getDoc(userRef);
+      if (!userSnap.exists()) {
+        throw new Error("User document not found");
+      }
+
+      const userData = userSnap.data() as AppUser;
+      const selectedSet = new Set(selectedQuestionsToApprove);
+
+      const updatedQuestions = userData.questions.map((q) => {
+        if (!selectedSet.has(q.questionNumber)) return q;
+
+        const questionMeta = questions[q.questionNumber - 1];
+        if (!questionMeta) return q;
+
+        // Mirror the logic from updateUserQuestion: for type 2 we only flip isCorrect,
+        // for others we also ensure answer is stored from questions metadata
+        if (questionMeta.questionType === 2) {
+          return { ...q, isCorrect: true };
+        }
+
+        return {
+          ...q,
+          answer: questionMeta.answer ?? q.answer,
+          isCorrect: true,
+        };
+      });
+
+      await updateDoc(userRef, { questions: updatedQuestions });
+
+      
+      setSelectedQuestionsToApprove([]);
+      setSelectedUser(null)
+      // Optionally keep modal open so admin can continue reviewing
+    } catch (error) {
+      console.error("Error approving selected questions:", error);
+    } finally {
+      setLoadingAnswers(false);
+    }
+  }
    function getUserAnswear(userAnswear:userQuestions,question:Question){
       if(question.questionType==2){
         return userAnswear.answer;
@@ -163,7 +162,8 @@ export default function AdminLeaderboard() {
             case "c":return data.c;break;
           }
       }else if(question.questionType==3){
-        return (userAnswear.answer)
+        if(userAnswear.answer=="t") return "richtig";
+        if(userAnswear.answer=="f") return "falsch";
       }
    }
    function getCorrectAnswear(userAnswear:userQuestions,question:Question){
@@ -179,11 +179,16 @@ export default function AdminLeaderboard() {
     }else if(question.questionType==3){
       switch(question.answer){
         case "f":return "falsch";break;
-        case "r":return "richtig";break;
-
+        case "t":return "richtig";break;
       }
-      return (question.answer)
     }
+ }
+ function checkIfSelected(answer:userQuestions){
+  let data;
+  selectedQuestionsToApprove.includes(answer.questionNumber)?
+  data=(selectedQuestionsToApprove.filter((q) => q !== answer.questionNumber)):
+  data=([...selectedQuestionsToApprove, answer.questionNumber])
+  setSelectedQuestionsToApprove(data)
  }
  if(!isOnline){
   return (
@@ -244,8 +249,8 @@ export default function AdminLeaderboard() {
               <Input
                 type="text"
                 placeholder="Szukaj użytkownika..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={debouncedSearch}
+                onChange={(e) => setDebouncedSearch(e.target.value)}
                 className="pl-12 py-6 text-lg bg-red-900/50 border-red-700 focus:border-yellow-400 text-white placeholder:text-red-300/50"
               />
             </div>
@@ -313,6 +318,9 @@ export default function AdminLeaderboard() {
               ) : (
                 userAnswers&&userAnswers.map((answer,idx) => (
                   <div
+                      onClick={() => {
+                        checkIfSelected(answer)
+                      }}
                     key={idx}
                     className={`p-4 rounded-xl border-2 ${
                       answer.isCorrect
@@ -320,8 +328,23 @@ export default function AdminLeaderboard() {
                         : 'bg-red-800/30 border-red-500'
                     }`}
                   >
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="font-bold text-yellow-400">Dzień {answer.questionNumber}</div>
+                    <div className="flex items-start justify-between mb-2"
+                    
+                    >
+                      <div className="flex items-center gap-2">
+                      {!answer.isCorrect ? 
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4 accent-yellow-400"
+                          checked={selectedQuestionsToApprove.includes(answer.questionNumber)}
+                          onChange={() => {
+                             checkIfSelected(answer)
+                          }}
+                        />:""}
+                        <div className="font-bold text-yellow-400">
+                          Dzień {answer.questionNumber}
+                        </div>
+                      </div>
                       {answer.isCorrect ? (
                         <CheckCircle className="w-5 h-5 text-green-400" />
                       ) : (
@@ -343,20 +366,22 @@ export default function AdminLeaderboard() {
                         {getCorrectAnswear(answer,questions[answer.questionNumber-1])}
                       </div>
                     </div>
-                    {!answer.isCorrect && (
-                      <Button
-                        onClick={() => updateUserQuestion(answer.questionNumber,questions[answer.questionNumber-1].answer!,true)}
-                        size="sm"
-                        className="mt-3 bg-green-600 hover:bg-green-700"
-                      >
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                        Zatwierdź jako poprawną
-                      </Button>
-                    )}
                   </div>
                 ))
               )}
             </div>
+            {selectedQuestionsToApprove.length > 0 && (
+              <div className="mt-6 flex justify-end">
+                <Button
+                  onClick={handleApproveSelectedQuestions}
+                  disabled={loadingAnswers}
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  {`Zatwierdź ${selectedQuestionsToApprove.length} pytań`}
+                </Button>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
       </div>
