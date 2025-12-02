@@ -55,11 +55,18 @@ export const useUsers = create<UserStore>((set, get) => ({
     if (get().unsubscribe) return // already listening
 
     const unsub = onSnapshot(collection(db, "users"), (snapshot) => {
-      const data = snapshot.docs.map((doc) => doc.data() as AppUser)
-      const tempData = data.filter((e)=>e.email!=="magkol.594@edu.erzeszow.pl"&&e.email!=="magenta2@wp.pl")
+      const data = snapshot.docs.map((snap) => {
+        const userData = snap.data() as Omit<AppUser, "id">
+        // Ensure we always have the Firestore document id available
+        return { ...userData, id: snap.id } as AppUser
+      })
+      const tempData = data.filter(
+        (e) =>
+          e.email !== "magkol.594@edu.erzeszow.pl" &&
+          e.email !== "magenta2@wp.pl",
+      )
       set({ users: tempData, isLoaded: true })
     })
-    
 
     set({ unsubscribe: unsub })
   },
@@ -104,8 +111,9 @@ export const useUser = create<UserStore2>((set, get) => ({
         userDocRef,
         (docSnapshot) => {
           if (docSnapshot.exists()) {
-            const userData = docSnapshot.data() as AppUser;
-            set({ user: userData, isLoadedUser: true });
+            const userData = docSnapshot.data() as Omit<AppUser, "id">;
+            // Attach the document id so admin pages can reference it
+            set({ user: { ...userData, id: docSnapshot.id }, isLoadedUser: true });
           } else {
             // User document doesn't exist
             set({ user: null, isLoadedUser: true });
