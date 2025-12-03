@@ -191,7 +191,7 @@ export const QuestionModal = ({
       }
 
       const userData = userSnap.data() as AppUser
-      console.log(userData)
+      
       // Find and update the specific question
       const updatedQuestions = userData.questions.map((q) => {
         if (q.questionNumber === questionNumber) {
