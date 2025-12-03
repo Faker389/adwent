@@ -64,7 +64,7 @@ export const CalendarWindow = ({ day, questions, onClick, style, isAnswered = fa
         } else {
           // Question is open - show time until deadline
           const deadline = new Date(targetDate)
-          deadline.setDate(deadline.getDate() )
+          deadline.setDate(deadline.getDate()+1 )
           deadline.setHours(23, 59, 59)
           const deadlineDiff = deadline.getTime() - now.getTime()
 

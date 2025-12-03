@@ -117,8 +117,8 @@ export const QuestionModal = ({
             }
           } else if (currentStatus === "available" || currentStatus === "expiring") {
             const deadline = new Date(openDate)
-            deadline.setDate(deadline.getDate() )
-            deadline.setHours(23, 59, 59, 999)
+            deadline.setDate(deadline.getDate()+1 )
+            deadline.setHours(23, 59, 59)
             const diff = deadline.getTime() - now.getTime()
 
             if (diff > 0) {
@@ -191,7 +191,6 @@ export const QuestionModal = ({
       }
 
       const userData = userSnap.data() as AppUser
-      console.log(userData)
       // Find and update the specific question
       const updatedQuestions = userData.questions.map((q) => {
         if (q.questionNumber === questionNumber) {
@@ -328,7 +327,6 @@ export const QuestionModal = ({
   
   const renderAnswerInput = () => {
     if (!question || !canAnswer) return null
-
     // Type 1: ABC Options
     if (question.questionType === 1 && isABCOption(question.options)) {
       const options = question.options
@@ -394,16 +392,16 @@ export const QuestionModal = ({
     return (
       <div className="space-y-2">
         <Label htmlFor="answer" className="text-white font-serif text-sm sm:text-base">
-          Twoja odpowiedź: *<span className="text-xs sm:text-sm">(Odpowiedzi udziel w języku niemieckim)</span>
+          Twoja odpowiedź: *<span className="text-xs sm:text-sm">(Odpowiedzi udziel w języku niemieckim, maksymalna dlugość 300 znaków)</span>
         </Label>
-        <Input
+        <textarea
           id="answer"
           value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
+          onChange={(e) => setAnswer(e.target.value.slice(0, 300))}
           placeholder="Wpisz swoją odpowiedź..."
-          className="bg-red-800/50 border-red-700 text-white placeholder:text-red-300/50 h-12 rounded-xl focus:border-yellow-400"
+          className="resize-none  bg-red-800/50 border-red-700 w-full pl-2 pt-2 text-white placeholder:text-red-300/50 h-24 rounded-xl focus:border-yellow-400"
           required
-        />
+        ></textarea>
       </div>
     )
   }

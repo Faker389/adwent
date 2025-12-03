@@ -47,10 +47,11 @@ export default function AdminLeaderboard() {
   useEffect(() => {
     listenToUsers();
   }, []);
+  // Debounce search input
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearchQuery(debouncedSearch)
-    }, 150)
+    }, 300)
     return () => clearTimeout(timer)
   }, [debouncedSearch])
   useEffect(() => {

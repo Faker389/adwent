@@ -230,7 +230,7 @@ export const RegistrationForm = ({showAlert}:{showAlert :(e: string,e2:"error" |
               id="password"
               type={showPassword?"text":"password"}
               value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value.trim().slice(0,30) })}
               placeholder="••••••••"
               className="bg-red-800/50 border-red-700 text-white placeholder:text-red-300/50 h-12 rounded-xl focus:border-yellow-400 pr-12"
               required
@@ -244,6 +244,7 @@ export const RegistrationForm = ({showAlert}:{showAlert :(e: string,e2:"error" |
               {showPassword ? <EyeClosed className='w-5 h-5' /> : <Eye className='w-5 h-5' />}
             </button>
           </div>
+            <p className='text-red-500 mt-2'>Maksymalna długość hasła to 30 znaków.</p>
         </div>
 
         <Button

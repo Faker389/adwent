@@ -54,7 +54,7 @@ export const getQuestionStatus = (day: number, questions: Question[]): QuestionS
   
   // Calculate deadline
   const deadline = new Date(question.openDate.toDate());
-  deadline.setDate(deadline.getDate() + 2);
+  deadline.setDate(deadline.getDate() +1);
   deadline.setHours(23, 59, 59, 999);
   
   // Already expired

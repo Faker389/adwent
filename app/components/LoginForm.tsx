@@ -120,14 +120,14 @@ export const LoginForm = ({ onSuccess,showAlert }: LoginFormProps) => {
             id="password"
             type={showPassword?"text":"password"}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value.trim().slice(0,30))}
             placeholder="••••••••"
             className="bg-red-800/50 border-red-700 text-white placeholder:text-red-300/50 h-12 rounded-xl focus:border-yellow-400"
             required
           />
           {!showPassword?<Eye onClick={()=>setShowPassword(!showPassword)} className='w-5 h-5 absolute top-1/2 right-3 z-50' />:<EyeClosed onClick={()=>setShowPassword(!showPassword)} className='w-5 h-5 absolute top-1/2 right-3 z-50' />}
-
         </div>
+        <p className='text-red-500 mt-2'>Maksymalna długość hasła to 30 znaków.</p>
 
         <Button
           type="submit"
@@ -136,6 +136,7 @@ export const LoginForm = ({ onSuccess,showAlert }: LoginFormProps) => {
         >
           {loading ? 'Logowanie...' : 'Zaloguj się 🎁'}
         </Button>
+
       </form>
 
       <div className="absolute top-4 right-4 text-yellow-400 text-xl animate-pulse">✨</div>
