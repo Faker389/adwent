@@ -23,6 +23,9 @@ export default function Page(){
     useEffect(()=>{
         listenToUsers()
     },[listenToUsers])
+    useEffect(()=>{
+      listenToUser()
+  },[listenToUser])
     function sortUsers(users:AppUser[]){
         var data = users.sort((a, b) => {
             const aCorrect = a.questions.filter(q => q.isCorrect === true).length;
