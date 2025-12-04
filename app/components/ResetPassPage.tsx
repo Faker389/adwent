@@ -104,7 +104,7 @@ export const ResetPasswordForm = ({ oobCode, showAlert }: ResetPasswordFormProps
             <Input
               type={showPassword ? "text" : "password"}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value.trim().slice(0, 30))}
               placeholder="••••••••"
               required
               className="bg-red-800/50 border-red-700 focus:border-yellow-400 text-white placeholder:text-red-300/50 pr-10"
@@ -125,7 +125,7 @@ export const ResetPasswordForm = ({ oobCode, showAlert }: ResetPasswordFormProps
             <Input
               type={showConfirmPassword ? "text" : "password"}
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e) => setConfirmPassword(e.target.value.trim().slice(0, 30))}
               placeholder="••••••••"
               required
               className="bg-red-800/50 border-red-700 focus:border-yellow-400 text-white placeholder:text-red-300/50 pr-10"

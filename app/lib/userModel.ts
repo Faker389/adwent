@@ -1,17 +1,17 @@
 import { Timestamp } from "firebase/firestore";
-
+export interface userQuestion{
+  questionNumber: number;
+  question: string;
+  answer: string;
+  isCorrect: boolean|null;
+}
 export interface AppUser {
     id:string
     class: string;
     email: string;
     firstName: string;
     lastName: string;
-    questions: {
-      questionNumber: number;
-      question: string;
-      answer: string;
-      isCorrect: boolean|null;
-    }[];
+    questions: userQuestion[];
   }
 
   export interface ABCOption {

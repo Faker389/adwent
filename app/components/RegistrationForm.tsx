@@ -80,6 +80,10 @@ export const RegistrationForm = ({showAlert}:{showAlert :(e: string,e2:"error" |
   }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if(formData.class==""){
+      showAlert("Wybierz klase","error");
+      return;
+    }
     setLoading(true);
     const uuid = await handleRegister()
     if(!uuid) return showAlert(

@@ -63,14 +63,21 @@ export const Leaderboard = () => {
           <Button
             onClick={() => router.push('/')}
             variant="outline"
-            className="mb-8 border-yellow-400 text-yellow-400 hover:bg-yellow-400/10"
+            className=" cursor-pointer mb-8 border-yellow-400 text-yellow-400 hover:bg-yellow-400/10"
           >
             ← Powrót do kalendarza
           </Button>
           <Button
+            onClick={() => router.push('/leaderboard/classList')}
+            variant="outline"
+            className=" cursor-pointer mb-8 ml-6 border-orange-400 text-red-400 hover:bg-red-800"
+          >
+            Tabela posortowana klasami
+          </Button>
+          <Button
             onClick={() => router.push('/leaderboard/admin')}
             variant="outline"
-            className="mb-8 ml-6 border-green-400 text-green-400 hover:bg-green-400/10"
+            className=" cursor-pointer mb-8 ml-6 border-green-400 text-green-400 hover:bg-green-400/10"
           >
             Panel zarządzania →
           </Button>
