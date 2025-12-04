@@ -15,9 +15,11 @@ export default function Page(){
   const isOnline = useOnlineStatus();
   const { isLoaded,listenToUsers,users} = useUsers();
   const [userList,setUserList]=useState<Record<string, objInterface[]>>({})
+  const [userTop3List,setUserTop3List]=useState<Record<string, objInterface[]>>({})
     useEffect(()=>{
         if(isLoaded){
             calcUsers()
+            calcTop3()
         }
     },[isLoaded])
     useEffect(()=>{
@@ -26,6 +28,23 @@ export default function Page(){
     useEffect(()=>{
       listenToUser()
   },[listenToUser])
+  function calcTop3(){
+    var data = sortUsers(users).slice(0,3)
+    var tempObj={
+      "Top 3":[]
+    }as Record<string, objInterface[]>
+    for(var x=0;x<data.length;x++){
+      var obj2={
+        name:data[x].firstName + " "+ data[x].lastName,
+        score:data[x].questions.reduce((prev,item)=>{
+          if(item.isCorrect) return prev+1
+          return prev
+      },0)
+      }
+      tempObj["Top 3"].push(obj2 )
+  }
+  setUserTop3List(tempObj)
+}
     function sortUsers(users:AppUser[]){
         var data = users.sort((a, b) => {
             const aCorrect = a.questions.filter(q => q.isCorrect === true).length;
@@ -43,8 +62,20 @@ export default function Page(){
                 obj[users[x].class]=[users[x]];
             }
         }
+        var sortedUsers = sortUsers(users).slice(0,3)
         var obj2 = {
+            "Top 3":[]
         }as Record<string, objInterface[]>
+        for(var x=0;x<sortedUsers.length;x++){
+          var objTemp={
+            name:sortedUsers[x].firstName + " "+ sortedUsers[x].lastName,
+            score:sortedUsers[x].questions.reduce((prev,item)=>{
+              if(item.isCorrect) return prev+1
+              return prev
+          },0)
+          }
+          obj2["Top 3"].push(objTemp )
+      }
         for(var x=0;x<Object.keys(obj).length;x++){
             obj[Object.keys(obj)[x]]=sortUsers(obj[Object.keys(obj)[x]]);
             var data=[]
@@ -115,66 +146,9 @@ export default function Page(){
     
             {/* Class Leaderboards */}
             <div className="space-y-8">
+              <Card className="Top 3" classIndex={0} userList={userTop3List}/>
               {Object.keys(userList).sort().map((className, classIndex) => (
-                <motion.div
-                  key={className}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: classIndex * 0.1 }}
-                  className="bg-red-900/50 backdrop-blur-sm border-2 border-yellow-400/50 rounded-3xl p-8 shadow-lg"
-                >
-                  {/* Class Header */}
-                  <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-red-700">
-                    <Medal className="w-8 h-8 text-yellow-400" />
-                    <h2 className="font-christmas text-4xl font-bold text-yellow-400">
-                      Klasa {className}
-                    </h2>
-                  </div>
-    
-                  {/* Students List */}
-                  <div className="space-y-3">
-                    {userList[className].map((student, studentIndex) => (
-                      <motion.div
-                        key={studentIndex}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.3, delay: studentIndex * 0.05 }}
-                        className="flex items-center justify-between bg-red-800/30 hover:bg-red-800/50 transition-colors rounded-xl p-4 border border-red-700/50"
-                      >
-                        <div className="flex items-center gap-4">
-                          <span className={`font-bold text-lg w-8 ${
-                            studentIndex === 0 ? 'text-yellow-400' : 
-                            studentIndex === 1 ? 'text-gray-300' : 
-                            studentIndex === 2 ? 'text-amber-600' : 
-                            'text-white'
-                          }`}>
-                            {studentIndex + 1}.
-                          </span>
-                          <span className="font-semibold text-white text-lg">
-                            {student.name}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className={`font-bold text-2xl ${
-                            studentIndex === 0 ? 'text-yellow-400' : 
-                            studentIndex === 1 ? 'text-gray-300' : 
-                            studentIndex === 2 ? 'text-amber-600' : 
-                            'text-white'
-                          }`}>
-                            {student.score}
-                          </span>
-                          <span className="text-red-300 text-sm">pkt</span>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-    
-                  {userList[className].length === 0 && (
-                    <div className="text-center py-8 text-red-300 font-serif">
-                      Brak uczniów w tej klasie
-                    </div>
-                  )}
-                </motion.div>
+                <Card key={className} className={className} classIndex={classIndex+1} userList={userList}/>
               ))}
             </div>
     
@@ -192,4 +166,71 @@ export default function Page(){
           </div>
         </div>
       );
+}
+interface CardProps{
+  className:string;
+  classIndex:number;
+  userList:Record<string, objInterface[]>
+}
+function Card({className,classIndex,userList}:CardProps){
+
+  return <motion.div
+  key={classIndex}
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5, delay: classIndex * 0.1 }}
+  className="bg-red-900/50 backdrop-blur-sm border-2 border-yellow-400/50 rounded-3xl p-8 shadow-lg"
+>
+  {/* Class Header */}
+  <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-red-700">
+    <Medal className="w-8 h-8 text-yellow-400" />
+    <h2 className="font-christmas text-4xl font-bold text-yellow-400">
+      {className.includes("Top")?"":"Klasa"} {className}
+    </h2>
+  </div>
+
+  {/* Students List */}
+  <div className="space-y-3">
+    {userList[className].map((student, studentIndex) => (
+      <motion.div
+        key={studentIndex}
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.3, delay: studentIndex * 0.05 }}
+        className="flex items-center justify-between bg-red-800/30 hover:bg-red-800/50 transition-colors rounded-xl p-4 border border-red-700/50"
+      >
+        <div className="flex items-center gap-4">
+          <span className={`font-bold text-lg w-8 ${
+            studentIndex === 0 ? 'text-yellow-400' : 
+            studentIndex === 1 ? 'text-gray-300' : 
+            studentIndex === 2 ? 'text-amber-600' : 
+            'text-white'
+          }`}>
+            {studentIndex + 1}.
+          </span>
+          <span className="font-semibold text-white text-lg">
+            {student.name}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className={`font-bold text-2xl ${
+            studentIndex === 0 ? 'text-yellow-400' : 
+            studentIndex === 1 ? 'text-gray-300' : 
+            studentIndex === 2 ? 'text-amber-600' : 
+            'text-white'
+          }`}>
+            {student.score}
+          </span>
+          <span className="text-red-300 text-sm">pkt</span>
+        </div>
+      </motion.div>
+    ))}
+  </div>
+
+  {userList[className].length === 0 && (
+    <div className="text-center py-8 text-red-300 font-serif">
+      Brak uczniów w tej klasie
+    </div>
+  )}
+</motion.div>
 }

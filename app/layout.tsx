@@ -30,7 +30,7 @@ export default function RootLayout({
       <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
       </head>
       <body
-        className={`${crimsonText.variable} ${mountainsOfChristmas.variable} h-full antialiased`}
+        className={`${crimsonText.variable} ${mountainsOfChristmas.variable} styled-scrollbar h-full antialiased`}
       >
         {children}
         <Analytics />
