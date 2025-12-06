@@ -14,8 +14,8 @@ export default function Page(){
     const { user, isLoadedUser, listenToUser } = useUser();
   const isOnline = useOnlineStatus();
   const { isLoaded,listenToUsers,users} = useUsers();
-  const [userList,setUserList]=useState<Record<string, objInterface[]>>({})
-  const [userTop3List,setUserTop3List]=useState<Record<string, objInterface[]>>({})
+  const [userList,setUserList]=useState<Record<string, objInterface[]>|null>(null)
+  const [userTop3List,setUserTop3List]=useState<Record<string, objInterface[]>|null>(null)
     useEffect(()=>{
         if(isLoaded){
             calcUsers()
@@ -146,13 +146,13 @@ export default function Page(){
     
             {/* Class Leaderboards */}
             <div className="space-y-8">
-              <Card className="Top 3" classIndex={0} userList={userTop3List}/>
-              {Object.keys(userList).sort().map((className, classIndex) => (
+              {userTop3List&&<Card className="Top 3" classIndex={0} userList={userTop3List}/>}
+              {userList&&Object.keys(userList).map((className, classIndex) => (
                 <Card key={className} className={className} classIndex={classIndex+1} userList={userList}/>
               ))}
             </div>
     
-            {Object.keys(userList).length === 0 && (
+            {!userList && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
