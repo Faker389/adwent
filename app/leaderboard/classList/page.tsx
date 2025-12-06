@@ -62,20 +62,9 @@ export default function Page(){
                 obj[users[x].class]=[users[x]];
             }
         }
-        var sortedUsers = sortUsers(users).slice(0,3)
         var obj2 = {
-            "Top 3":[]
+            
         }as Record<string, objInterface[]>
-        for(var x=0;x<sortedUsers.length;x++){
-          var objTemp={
-            name:sortedUsers[x].firstName + " "+ sortedUsers[x].lastName,
-            score:sortedUsers[x].questions.reduce((prev,item)=>{
-              if(item.isCorrect) return prev+1
-              return prev
-          },0)
-          }
-          obj2["Top 3"].push(objTemp )
-      }
         for(var x=0;x<Object.keys(obj).length;x++){
             obj[Object.keys(obj)[x]]=sortUsers(obj[Object.keys(obj)[x]]);
             var data=[]
