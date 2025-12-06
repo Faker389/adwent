@@ -168,7 +168,7 @@ export const QuestionModal = ({
 
     // Type 2: Text Input - return null (to be checked manually later)
     if (question.questionType === 2) {
-      return null
+      return false
     }
 
     return null
