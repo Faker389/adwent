@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
 /* Define theme colors for Tailwind v4 */
+.global__padContainer-TqyD5{
+  display:none !important;
+}
 @theme {
   /* Christmas colors */
   --color-background: #450a0a;
