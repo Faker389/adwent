@@ -532,7 +532,7 @@ export const QuestionModal = ({
               </div>
 
               {/* Question */}
-              <div className="mb-4 sm:mb-6 p-4 sm:p-6 bg-red-800/50 rounded-2xl border border-red-700">
+              {(hourTimerExpired||isExpired)?"":<div className="mb-4 sm:mb-6 p-4 sm:p-6 bg-red-800/50 rounded-2xl border border-red-700">
                 {isAnswered ? (
                   <div className="text-center">
                     <CheckCircle className="w-8 h-8 sm:w-12 sm:h-12 text-green-400 mx-auto mb-3 sm:mb-4" />
@@ -557,7 +557,7 @@ export const QuestionModal = ({
                   <p className="text-base sm:text-lg text-center text-gray-400 font-serif">Ładowanie pytania...</p>
                 ) : (
                   <>
-                    {question?.image && (
+                    {(hourTimerExpired||isExpired)?"": question?.image && (
                       <div className="mb-3 sm:mb-4 flex justify-center">
                         <img
                           src={question.image || "/placeholder.svg"}
@@ -569,14 +569,14 @@ export const QuestionModal = ({
                     )}
                     <div>
 
-                      {question?.question.includes("&")?question.question.split("&").map((e,idx)=>{
+                      {(hourTimerExpired||isExpired)?"":question?.question.includes("&")?question.question.split("&").map((e,idx)=>{
                         return <p key={idx} className="text-sm sm:text-base md:text-lg text-center text-white font-serif leading-relaxed">{e.replace(/&/g, '\n')}</p>
                       }) :question?.question?<p className="text-sm sm:text-base md:text-lg text-center text-white font-serif leading-relaxed">{question.question}</p>:<p className="text-sm sm:text-base md:text-lg text-center text-white font-serif leading-relaxed">Brak pytania na ten dzień</p>}
                     
                       </div>
                   </>
                 )}
-              </div>
+              </div>}
 
               {/* Form */}
               {canAnswer ? (

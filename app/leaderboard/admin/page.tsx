@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, CheckCircle, XCircle, Edit } from 'lucide-react';
+import { Search, CheckCircle, XCircle, Edit, X } from 'lucide-react';
 import { Button } from "../../components/ui/button";
 import { Input } from '../../components/ui/input';
 import { useRouter } from 'next/navigation';
@@ -39,10 +39,25 @@ export default function AdminLeaderboard() {
   const isOnline = useOnlineStatus();
   const [loadingAnswers, setLoadingAnswers] = useState(false);
   const router = useRouter();
+  const [clickedImage, setClickedImage] = useState<string>("")
+
   const { questions,isLoadedQuestions, listenToQuestions } = useQuestions()
   useEffect(()=>{
     listenToQuestions()
   },[listenToQuestions])
+
+  useEffect(() => {
+    if (clickedImage) {
+      // Disable scrolling
+      document.body.style.overflow = "hidden";
+    } else {
+      // Enable scrolling
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [clickedImage]);
   const { isLoaded,listenToUsers,users} = useUsers();
   useEffect(() => {
     listenToUsers();
@@ -53,13 +68,44 @@ export default function AdminLeaderboard() {
     }, 300)
     return () => clearTimeout(timer)
   }, [debouncedSearch])
+  function checQuestionType(question:number){
+    let hashQuestions={
+      1:1,
+      2:2,
+      3:3,
+      4:1,
+      5:3,
+      6:2,
+      7:1,
+      8:1,
+      9:2,
+      10:2,
+      11:3,
+      12:2,
+      13:2,
+      14:1,
+      15:2,
+      16:2,
+      17:2,
+      18:1,
+      19:2,
+      20:2,
+      21:2,
+      22:2,
+      23:1,
+      24:2,
+    } as Record<number,number>
+    console.log(`number: ${question}  type: ${hashQuestions[question]}`)
+    return hashQuestions[question];
+  }
   useEffect(() => {
+    const sortAlpahabeticly = users.sort()
     if (searchQuery.trim() === '') {
-      setFilteredUsers(users);
+      setFilteredUsers(sortAlpahabeticly);
     } else {
       const query = searchQuery.toLowerCase();
       setFilteredUsers(
-        users.filter(
+        sortAlpahabeticly.filter(
           (user) =>
             user.firstName.toLowerCase().includes(query) ||
             user.lastName.toLowerCase().includes(query) ||
@@ -166,23 +212,7 @@ export default function AdminLeaderboard() {
         if(userAnswear.answer=="f") return "falsch";
       }
    }
-   function getCorrectAnswear(userAnswear:userQuestions,question:Question){
-    if(question.questionType==2){
-      return "pytanie otwarte";
-    }else if(question.questionType==1){
-        const data = question.options as ABCOption;
-        switch(question.answer){
-          case "a":return data.a;break;
-          case "b":return data.b;break;
-          case "c":return data.c;break;
-        }
-    }else if(question.questionType==3){
-      switch(question.answer){
-        case "f":return "falsch";break;
-        case "t":return "richtig";break;
-      }
-    }
- }
+ 
  function checkIfSelected(answer:userQuestions){
   let data;
   selectedQuestionsToApprove.includes(answer.questionNumber)?
@@ -217,6 +247,31 @@ export default function AdminLeaderboard() {
 
   return (
     <>
+    {clickedImage && (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    className="fixed inset-0 z-[999] bg-black/80 flex justify-center items-center"
+  >
+    {/* Close button */}
+    <button
+      onClick={() => setClickedImage("")}
+      className="absolute top-6 right-6 text-white hover:text-gray-300"
+    >
+      <X className="w-10 h-10" />
+    </button>
+
+    {/* Image */}
+    <motion.img
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0.8, opacity: 0 }}
+      src={clickedImage}
+      className="max-h-[90vh] max-w-[90vw] rounded-xl shadow-2xl"
+    />
+  </motion.div>
+)}
       <Snowflakes />
       <div className="min-h-dvh bg-gradient-to-b from-red-950 via-red-900 to-red-950 py-12 px-4 text-white">
         <div className="max-w-6xl mx-auto">
@@ -316,7 +371,7 @@ export default function AdminLeaderboard() {
                   Użytkownik nie odpowiedział jeszcze na żadne pytanie
                 </div>
               ) : (
-                userAnswers&&userAnswers.map((answer,idx) => (
+                userAnswers&&userAnswers.filter((v)=> checQuestionType(v.questionNumber)==2).map((answer,idx) => (
                   <div
                       onClick={() => {
                         checkIfSelected(answer)
@@ -354,17 +409,25 @@ export default function AdminLeaderboard() {
                     <div className="text-sm text-red-200 mb-2">
                       {answer.question}
                     </div>
-                    <div className="space-y-1">
+                    <div className="space-y-1 flex">
+                      <div>
                       <div className="text-sm">
                       <span className="font-semibold">Pytanie: </span>
                         {questions[answer.questionNumber-1].question}<br/>
                         <span className="font-semibold">Odpowiedź użytkownika:</span>{' '}
-                        {getUserAnswear(answer,questions[answer.questionNumber-1])}
+                        {answer.answer}
                       </div>
                       <div className="text-sm">
                         <span className="font-semibold">Poprawna odpowiedź:</span>{' '}
-                        {getCorrectAnswear(answer,questions[answer.questionNumber-1])}
+                        pytanie otwarte
                       </div>
+                      </div>
+                      {questions[answer.questionNumber-1].image?<img
+                          src={`../${questions[answer.questionNumber-1].image}`}
+                          alt={`Obrazek do pytania ${answer.questionNumber}`}
+                          onClick={()=>setClickedImage(`../${questions[answer.questionNumber-1].image}`)}
+                           className="max-w-full max-h-32 sm:max-h-48 rounded-xl "
+                        />:""}
                     </div>
                   </div>
                 ))
