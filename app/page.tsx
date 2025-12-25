@@ -6,16 +6,40 @@ import { CalendarWindow } from './components/CalendarWindow';
 import { QuestionModal } from './components/QuestionModal';
 import { PathConnector } from "./components/PathConnector";
 import { LogOut, Trophy, Loader2 } from 'lucide-react';
-import { AppUser, Question } from './lib/userModel';
 import { getUserFromCookies, logoutUser } from './lib/cookies';
 import { auth, db, getCurrentUser } from './lib/firebase';
-import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
-import { useQuestions, useUser } from './lib/useQuestions';
+import { useQuestions, useUser, useUsers } from './lib/useQuestions';
 import useOnlineStatus from './lib/useIsOnline';
+import { AppUser } from './lib/userModel';
+interface Placement{
+  globalPlace:number;
+globalLength:number;
+glonalSame:number;
+localPlace:number;
+localLength:number;
+localSame:number;
+}
+interface objInterface{
+  name:string
+  score:number
+}
 const Index = () => {
+  const [isVisible,setIsVisible]=useState<boolean>(false)
+  const [placementObj,setPlacementObj]=useState<Placement>({
+    globalPlace:0,
+    globalLength:0,
+    glonalSame:0,
+    localPlace:0,
+    localLength:0,
+    localSame:0
+  })
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
   const { questions, isLoadedQuestions, listenToQuestions } = useQuestions()
   const { user, isLoadedUser, listenToUser } = useUser();
+  const { isLoaded,listenToUsers,users} = useUsers();
+  useEffect(() => {
+    listenToUsers();
+  }, []);
   async function getuser(){
     const userFromCookies = await getCurrentUser()
     if(!userFromCookies) {
@@ -23,8 +47,81 @@ const Index = () => {
       return;
     }
   }
-  const isOnline = useOnlineStatus();
   useEffect(()=>{
+    if(users&&user) calcUsers(user.class,users)
+  },[users,user])
+  const isOnline = useOnlineStatus();
+  const sortUsersByCorrectAnswers = (users: AppUser[]) => {
+    return users.sort((a, b) => {
+      const aCorrect = a.questions.filter(q => q.isCorrect === true).length;
+      const bCorrect = b.questions.filter(q => q.isCorrect === true).length;
+      return bCorrect - aCorrect; // highest first
+    });
+  };
+  function calcUsers(klasa:string,usrs:AppUser[]){
+    var obj = {} as Record<string, AppUser[]>
+    for(var x=0;x<users.length;x++){
+        if(obj[users[x].class]!==undefined){
+            obj[users[x].class]=[...obj[users[x].class],users[x]];
+        }else{
+            obj[users[x].class]=[users[x]];
+        }
+    }
+    var obj2 = {
+        
+    }as Record<string, objInterface[]>
+    for(var x=0;x<Object.keys(obj).length;x++){
+        obj[Object.keys(obj)[x]]=sortUsersByCorrectAnswers(obj[Object.keys(obj)[x]]);
+        var data=[]
+        for(var y=0;y<obj[Object.keys(obj)[x]].length;y++){
+            var obj3 = {
+                name:obj[Object.keys(obj)[x]][y].firstName + " "+ obj[Object.keys(obj)[x]][y].lastName,
+                score:obj[Object.keys(obj)[x]][y].questions.reduce((prev,item)=>{
+                    if(item.isCorrect) return prev+1
+                    return prev
+                },0)
+            }
+            data.push(obj3)
+        }
+        obj2[Object.keys(obj)[x]]=data
+    }
+    retrieveUsers(obj2[klasa],usrs)
+}
+function retrieveUsers(data:objInterface[],usrs:AppUser[]){
+  const usersSorted = sortUsersByCorrectAnswers(usrs)
+  let usrID=0;
+  let globalSame=0;
+  var score = user?.questions.reduce((prev,item)=>{
+    if(item.isCorrect) return prev+1
+    return prev
+},0)
+  for(var x=0;x<usersSorted.length;x++){
+    var userScore = usersSorted[x].questions.reduce((prev,item)=>{
+      if(item.isCorrect) return prev+1
+      return prev
+  },0)
+  if(score==userScore) globalSame++
+    if(usersSorted[x].id==user?.id){
+      usrID=x;
+    }
+  }
+  let localSame=0;
+  let place = 0
+  for(var x=0;x<data.length;x++){
+    if(data[x].score==score)localSame++
+    if(data[x].name==user?.firstName+" "+user?.lastName)   place=x
+  }
+  setPlacementObj({
+    glonalSame:globalSame,
+    globalLength:usersSorted.length,
+    globalPlace:(usrID)+1,
+    localSame:localSame,
+    localLength:data.length,
+    localPlace:place+1
+  })
+}
+  useEffect(()=>{
+    window.scrollTo(0,0)
     getuser()
   },[])
   // Start listening to questions on mount
@@ -88,7 +185,7 @@ const Index = () => {
     );
   }
   // Show loading screen while questions are being fetched
-  if (!isLoadedQuestions||!isLoadedUser) {
+  if (!isLoadedQuestions||!isLoadedUser||!isLoaded) {
     return (
       <div className="min-h-dvh bg-gradient-to-b from-red-950 via-red-900 to-red-950 flex items-center justify-center">
         <div className="text-center">
@@ -117,7 +214,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-dvh bg-gradient-to-b from-red-950 via-red-900 to-red-950 text-white overflow-x-hidden">
+    <div className="min-h-dvh bg-gradient-to-b from-red-950 via-red-900 to-red-950 text-white overflow-hidden">
       <Snowflakes />
 
       {/* Fixed Header with Navigation */}
@@ -162,24 +259,27 @@ const Index = () => {
             className="space-y-8"
           >
             <h1 className="font-christmas text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-yellow-400 drop-shadow-2xl px-2" style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.5)' }}>
-              Zapraszamy do udziału w konkursie<br />„Kalendarz Adwentowy"!
+              Dziękujemy za udział w konkursie<br />„Kalendarz Adwentowy"!
             </h1>
             
             <div className="max-w-3xl mx-auto bg-red-900/40 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border-2 border-yellow-400/30">
               <h2 className="font-christmas text-xl sm:text-2xl md:text-3xl font-bold text-yellow-300 mb-2 sm:mb-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
-                Zasady konkursu:
+                Podziękowania:
               </h2>
-              <p className="font-christmas text-sm sm:text-base md:text-lg lg:text-xl text-white leading-relaxed">
-                Każdego dnia będzie czekało na was nowe okienko. Odpowiedzi należy udzielać w języku niemieckim. Każde okienko otworzy się w wyznaczonym dniu, a w razie pominięcia można cofnąć się jedynie o jeden dzień. Po otwarciu pytania czas na jego rozwiązanie to 60 minut.
+              <p className=" text-sm sm:text-base md:text-lg lg:text-xl text-white leading-relaxed">
+                  Dziękujemy za udział w konkursie. W przyszłości będzie się pojawiało więcej konkursów pod tym adresem URL. Wyczekujcie cierpliwie.
               </p>
             </div>
 
             <div className="max-w-3xl mx-auto bg-red-900/40 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border-2 border-yellow-400/30">
               <h2 className="font-christmas text-xl sm:text-2xl md:text-3xl font-bold text-yellow-300 mb-2 sm:mb-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
-                Nagrody:
+                Twoje miejsca:
               </h2>
-              <p className="font-christmas text-sm sm:text-base md:text-lg lg:text-xl text-white leading-relaxed">
-                Dla trzech najlepszych uczestników przewidziane są nagrody. Dodatkowo zostaną wyróżnieni najlepsi uczniowie z każdej klasy.
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white leading-relaxed">
+                <span className='' >Miejsce w rankingu szkolnym</span> : {placementObj.globalPlace} {placementObj.glonalSame>1?`(Egzekwo z ${placementObj.glonalSame} osobami)`:""} / {placementObj.globalLength}
+              </p>
+              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white leading-relaxed">
+                <span className=''>Miejsce w rankingu klasowym </span> : {placementObj.localPlace} {placementObj.localSame>1?`(Egzekwo z ${placementObj.glonalSame} osobami)`:""} / {placementObj.localLength}
               </p>
             </div>
             
@@ -188,22 +288,21 @@ const Index = () => {
             </p>
           </motion.div>
         </div>
-
         {/* Decorative lights */}
         <div className="absolute top-20 left-0 right-0 flex justify-around px-4 sm:px-8 z-20">
           {Array.from({ length: 12 }).map((_, i) => (
             <div
-              key={i}
-              className="w-3 h-3 sm:w-4 sm:h-4 rounded-full animate-pulse"
-              style={{
-                backgroundColor: i % 3 === 0 ? '#facc15' : i % 3 === 1 ? '#22c55e' : '#ef4444',
-                animationDelay: `${i * 0.2}s`,
-              }}
+            key={i}
+            className="w-3 h-3 sm:w-4 sm:h-4 rounded-full animate-pulse"
+            style={{
+              backgroundColor: i % 3 === 0 ? '#facc15' : i % 3 === 1 ? '#22c55e' : '#ef4444',
+              animationDelay: `${i * 0.2}s`,
+            }}
             />
           ))}
         </div>
       </div>
-
+      {isVisible&&<>
       {/* Calendar Section */}
       <div className="relative bg-gradient-to-b from-red-950 via-red-900 py-12 sm:py-20 px-2 sm:px-4">
          
@@ -255,6 +354,7 @@ const Index = () => {
         onClose={() => setSelectedDay(null)}
         onAnswerSubmitted={() => {}}
       />
+      </>}
     </div>
   );
 };
