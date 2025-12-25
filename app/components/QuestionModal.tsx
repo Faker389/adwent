@@ -397,7 +397,7 @@ export const QuestionModal = ({
         <textarea
           id="answer"
           value={answer}
-          onChange={(e) => setAnswer(e.target.value.slice(0, 300))}
+          onChange={(e) => setAnswer(e.target.value.slice(0, 700))}
           placeholder="Wpisz swoją odpowiedź..."
           className="resize-none  bg-red-800/50 border-red-700 mt-3  outline-red-700 w-full pl-2 pt-2 text-white placeholder:text-red-300/50 h-24 rounded-xl focus:border-yellow-400"
           required
