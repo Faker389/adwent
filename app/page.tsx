@@ -267,7 +267,7 @@ function retrieveUsers(data:objInterface[],usrs:AppUser[]){
                 Podziękowania:
               </h2>
               <p className=" text-sm sm:text-base md:text-lg lg:text-xl text-white leading-relaxed">
-                  Dziękujemy za udział w konkursie. W przyszłości będzie się pojawiało więcej konkursów pod tym adresem URL. Wyczekujcie cierpliwie.
+                 Dziękujemy za udział w konkursie. W przyszłości pod tym adresem URL będzie pojawiać się więcej konkursów. Na ogłoszenie wyników zapraszamy w nowym roku.
               </p>
             </div>
 
