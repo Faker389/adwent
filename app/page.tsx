@@ -271,17 +271,7 @@ function retrieveUsers(data:objInterface[],usrs:AppUser[]){
               </p>
             </div>
 
-            <div className="max-w-3xl mx-auto bg-red-900/40 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border-2 border-yellow-400/30">
-              <h2 className="font-christmas text-xl sm:text-2xl md:text-3xl font-bold text-yellow-300 mb-2 sm:mb-3" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
-                Twoje miejsca:
-              </h2>
-              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white leading-relaxed">
-                <span className='' >Miejsce w rankingu szkolnym</span> : {placementObj.globalPlace} {placementObj.glonalSame>1?`(Egzekwo z ${placementObj.glonalSame} osobami)`:""} / {placementObj.globalLength}
-              </p>
-              <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white leading-relaxed">
-                <span className=''>Miejsce w rankingu klasowym </span> : {placementObj.localPlace} {placementObj.localSame>1?`(Egzekwo z ${placementObj.glonalSame} osobami)`:""} / {placementObj.localLength}
-              </p>
-            </div>
+            
             
             <p className="font-christmas text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-yellow-400 italic mt-4 sm:mt-6" style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
               Viel Spaß!
